@@ -37,13 +37,12 @@
 
 # 1. Table of Contents <a class="anchor" id="TOC"></a>
 
-This project explores the various methods in assessing **Data Quality**, implementing **Data Preprocessing** and conducting **Data Exploration** for prediction problems with numeric responses using various helpful packages in <mark style="background-color: #CCECFF"><b>Python</b></mark>. A non-exhaustive list of methods to detect missing data, extreme outlying points, near-zero variance, multicollinearity, and skewed distributions were evaluated. Remedial procedures on addressing data quality issues including missing data imputation, centering and scaling transformation, shape transformation and outlier treatment were similarly considered, as applicable. All results were consolidated in a [<span style="color: #FF0000"><b>Summary</b></span>](#Summary) presented at the end of the document.
+This project manually implements the **Gradient Descent** algorithm using various helpful packages in <mark style="background-color: #CCECFF"><b>Python</b></mark>, and evaluates a range of values for the learning rate and epoch count parameters to optimally estimate the coefficients of a linear regression model. The cost function optimization profiles of the different candidate parameter settings were compared, with the resulting estimated coefficients assessed against those obtained using normal equations which served as the reference baseline values. All results were consolidated in a [<span style="color: #FF0000"><b>Summary</b></span>](#Summary) presented at the end of the document.
 
-[Data quality assessment](http://appliedpredictivemodeling.com/) involves profiling and assessing the data to understand its suitability for machine learning tasks. The quality of training data has a huge impact on the efficiency, accuracy and complexity of machine learning tasks. Data remains susceptible to errors or irregularities that may be introduced during collection, aggregation or annotation stage. Issues such as incorrect labels, synonymous categories in a categorical variable or heterogeneity in columns, among others, which might go undetected by standard pre-processing modules in these frameworks can lead to sub-optimal model performance, inaccurate analysis and unreliable decisions.
+[Regression coefficients](https://link.springer.com/book/10.1007/978-1-4757-3462-1) represent the changes in the independent variable which explain the variation of the dependent variable in the model. The methods applied in this study attempt to estimate the unknown model coefficients by optimizing a loss function - that which measures the quality of the estimated parameters based on how well the model-induced scores agree with the ground truth labels in the data set.
 
-[Data preprocessing](http://appliedpredictivemodeling.com/) involves changing the raw feature vectors into a representation that is more suitable for the downstream modelling and estimation processes, including data cleaning, integration, reduction and transformation. Data cleaning aims to identify and correct errors in the dataset that may negatively impact a predictive model such as removing outliers, replacing missing values, smoothing noisy data, and correcting inconsistent data. Data integration addresses potential issues with redundant and inconsistent data obtained from multiple sources through approaches such as detection of tuple duplication and data conflict. The purpose of data reduction is to have a condensed representation of the data set that is smaller in volume, while maintaining the integrity of the original data set. Data transformation converts the data into the most appropriate form for data modeling.
+[Gradient descent](https://link.springer.com/book/10.1007/978-1-4757-3462-1) minimizes the loss function parameterized by the model’s coefficients based on the direction and learning rate factors which determine the partial derivative calculations of future iterations, allowing the algorithm to gradually arrive at the local or global minimum considered the point of convergence. This particular implementation used Batch Gradient Descent which computes the gradient of the loss function with respect to the parameters for the entire data set. A very high learning rate (also referred to as step size or the alpha) and low epoch count were applied resulting in larger steps with lesser risks of overshooting the minimum due to a lower number of iterations.
 
-[Data exploration](http://appliedpredictivemodeling.com/) involves analyzing and investigating data sets to summarize their main characteristics, often employing data visualization methods. It helps determine how best to manipulate data sources to discover patterns, spot anomalies, test a hypothesis, or check assumptions. This process is primarily used to see what data can reveal beyond the formal modeling or hypothesis testing task and provides a better understanding of data set variables and the relationships between them.
 
 ## 1.1. Data Background <a class="anchor" id="1.1"></a>
 
@@ -138,9 +137,14 @@ from operator import add,mul,truediv
 from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
 from sklearn.linear_model import LinearRegression
-from sklearn.preprocessing import PowerTransformer
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import PowerTransformer, StandardScaler
 from scipy import stats
+
+from sklearn.linear_model import RidgeCV, LassoCV, ElasticNetCV
+from sklearn.metrics import r2_score,mean_squared_error,mean_absolute_error
+from sklearn.model_selection import train_test_split, LeaveOneOut
+from sklearn.preprocessing import PolynomialFeatures 
+from sklearn.pipeline import Pipeline
 ```
 
 
@@ -5258,7 +5262,272 @@ display(cancer_rate_preprocessed_categorical_summary.sort_values(by=['T.Test.PVa
 
 ### 1.6.1 Premodelling Data Description <a class="anchor" id="1.6.1"></a>
 
+1. Among the 10 numeric variables determined to have a statistically significant linear relationship between the <span style="color: #FF0000">CANRAT</span> target variable, only 6 were retained with absolute Pearson correlation coefficient values greater than 0.50. 
+    * <span style="color: #FF0000">GDPCAP</span>: Pearson.Correlation.Coefficient=+0.735, Correlation.PValue=0.000
+    * <span style="color: #FF0000">LIFEXP</span>: Pearson.Correlation.Coefficient=+0.702, Correlation.PValue=0.000   
+    * <span style="color: #FF0000">DTHCMD</span>: Pearson.Correlation.Coefficient=-0.687, Correlation.PValue=0.000 
+    * <span style="color: #FF0000">EPISCO</span>: Pearson.Correlation.Coefficient=+0.648, Correlation.PValue=0.000 
+    * <span style="color: #FF0000">TUBINC</span>: Pearson.Correlation.Coefficient=-0.628, Correlation.PValue=0.000 
+    * <span style="color: #FF0000">CO2EMI</span>: Pearson.Correlation.Coefficient=+0.585, Correlation.PValue=0.000  
+2. Among the 4 4 categorical predictors determined to have a a statistically significant difference between the means of <span style="color: #FF0000">CANRAT</span> measuremens obtained from groups 0 and 1, only 1 was retained with absolute T-Test statistics greater than 10.
+    * <span style="color: #FF0000">HDICAT_VH</span>: T.Test.Statistic=-10.605, T.Test.PValue=0.000
+
+
+```python
+##################################
+# Consolidating relevant numeric columns
+# and encoded categorical columns
+# after hypothesis testing
+##################################
+cancer_rate_premodelling = cancer_rate_preprocessed.drop(['EPISCO','TUBINC','CO2EMI','AGRLND','POPDEN','GHGEMI','FORARE','POPGRO','URBPOP','HDICAT_VH','HDICAT_H','HDICAT_M','HDICAT_L'], axis=1)
+```
+
+
+```python
+##################################
+# Performing a general exploration of the filtered dataset
+##################################
+print('Dataset Dimensions: ')
+display(cancer_rate_premodelling.shape)
+```
+
+    Dataset Dimensions: 
+    
+
+
+    (163, 4)
+
+
+
+```python
+##################################
+# Listing the column names and data types
+##################################
+print('Column Names and Data Types:')
+display(cancer_rate_premodelling.dtypes)
+```
+
+    Column Names and Data Types:
+    
+
+
+    CANRAT    float64
+    LIFEXP    float64
+    DTHCMD    float64
+    GDPCAP    float64
+    dtype: object
+
+
+
+```python
+##################################
+# Taking a snapshot of the dataset
+##################################
+cancer_rate_premodelling.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>CANRAT</th>
+      <th>LIFEXP</th>
+      <th>DTHCMD</th>
+      <th>GDPCAP</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2.076468</td>
+      <td>1.643195</td>
+      <td>-0.971464</td>
+      <td>1.549766</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1.962991</td>
+      <td>1.487969</td>
+      <td>-1.091413</td>
+      <td>1.407752</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1.742760</td>
+      <td>1.537044</td>
+      <td>-0.836295</td>
+      <td>1.879374</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1.690866</td>
+      <td>0.664178</td>
+      <td>-0.903718</td>
+      <td>1.685426</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1.634224</td>
+      <td>1.381877</td>
+      <td>-0.657145</td>
+      <td>1.657777</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+##################################
+# Gathering the pairplot for all variables
+##################################
+sns.pairplot(cancer_rate_premodelling, kind='reg')
+plt.show()
+```
+
+
+    
+![png](output_164_0.png)
+    
+
+
+
+```python
+##################################
+# Separating the target 
+# and predictor columns
+##################################
+X = cancer_rate_premodelling.drop('CANRAT', axis = 1)
+y = cancer_rate_premodelling.CANRAT
+```
+
+
+```python
+##################################
+# Formulating the train and test data
+# using a 70-30 ratio
+##################################
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3, random_state= 88888888)
+```
+
+
+```python
+##################################
+# Performing a general exploration of the train dataset
+##################################
+print('Dataset Dimensions: ')
+display(X_train.shape)
+```
+
+    Dataset Dimensions: 
+    
+
+
+    (114, 3)
+
+
 ### 1.6.2 Normal Equations <a class="anchor" id="1.6.2"></a>
+
+
+```python
+##################################
+# Defining the linear regression model
+##################################
+linear_regression = LinearRegression()
+
+##################################
+# Fitting a linear regression model
+##################################
+linear_regression.fit(X_train, y_train)
+```
+
+
+
+
+<style>#sk-container-id-1 {color: black;background-color: white;}#sk-container-id-1 pre{padding: 0;}#sk-container-id-1 div.sk-toggleable {background-color: white;}#sk-container-id-1 label.sk-toggleable__label {cursor: pointer;display: block;width: 100%;margin-bottom: 0;padding: 0.3em;box-sizing: border-box;text-align: center;}#sk-container-id-1 label.sk-toggleable__label-arrow:before {content: "▸";float: left;margin-right: 0.25em;color: #696969;}#sk-container-id-1 label.sk-toggleable__label-arrow:hover:before {color: black;}#sk-container-id-1 div.sk-estimator:hover label.sk-toggleable__label-arrow:before {color: black;}#sk-container-id-1 div.sk-toggleable__content {max-height: 0;max-width: 0;overflow: hidden;text-align: left;background-color: #f0f8ff;}#sk-container-id-1 div.sk-toggleable__content pre {margin: 0.2em;color: black;border-radius: 0.25em;background-color: #f0f8ff;}#sk-container-id-1 input.sk-toggleable__control:checked~div.sk-toggleable__content {max-height: 200px;max-width: 100%;overflow: auto;}#sk-container-id-1 input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {content: "▾";}#sk-container-id-1 div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 input.sk-hidden--visually {border: 0;clip: rect(1px 1px 1px 1px);clip: rect(1px, 1px, 1px, 1px);height: 1px;margin: -1px;overflow: hidden;padding: 0;position: absolute;width: 1px;}#sk-container-id-1 div.sk-estimator {font-family: monospace;background-color: #f0f8ff;border: 1px dotted black;border-radius: 0.25em;box-sizing: border-box;margin-bottom: 0.5em;}#sk-container-id-1 div.sk-estimator:hover {background-color: #d4ebff;}#sk-container-id-1 div.sk-parallel-item::after {content: "";width: 100%;border-bottom: 1px solid gray;flex-grow: 1;}#sk-container-id-1 div.sk-label:hover label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 div.sk-serial::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: 0;}#sk-container-id-1 div.sk-serial {display: flex;flex-direction: column;align-items: center;background-color: white;padding-right: 0.2em;padding-left: 0.2em;position: relative;}#sk-container-id-1 div.sk-item {position: relative;z-index: 1;}#sk-container-id-1 div.sk-parallel {display: flex;align-items: stretch;justify-content: center;background-color: white;position: relative;}#sk-container-id-1 div.sk-item::before, #sk-container-id-1 div.sk-parallel-item::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: -1;}#sk-container-id-1 div.sk-parallel-item {display: flex;flex-direction: column;z-index: 1;position: relative;background-color: white;}#sk-container-id-1 div.sk-parallel-item:first-child::after {align-self: flex-end;width: 50%;}#sk-container-id-1 div.sk-parallel-item:last-child::after {align-self: flex-start;width: 50%;}#sk-container-id-1 div.sk-parallel-item:only-child::after {width: 0;}#sk-container-id-1 div.sk-dashed-wrapped {border: 1px dashed gray;margin: 0 0.4em 0.5em 0.4em;box-sizing: border-box;padding-bottom: 0.4em;background-color: white;}#sk-container-id-1 div.sk-label label {font-family: monospace;font-weight: bold;display: inline-block;line-height: 1.2em;}#sk-container-id-1 div.sk-label-container {text-align: center;}#sk-container-id-1 div.sk-container {/* jupyter's `normalize.less` sets `[hidden] { display: none; }` but bootstrap.min.css set `[hidden] { display: none !important; }` so we also need the `!important` here to be able to override the default hidden behavior on the sphinx rendered scikit-learn.org. See: https://github.com/scikit-learn/scikit-learn/issues/21755 */display: inline-block !important;position: relative;}#sk-container-id-1 div.sk-text-repr-fallback {display: none;}</style><div id="sk-container-id-1" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>LinearRegression()</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-1" type="checkbox" checked><label for="sk-estimator-id-1" class="sk-toggleable__label sk-toggleable__label-arrow">LinearRegression</label><div class="sk-toggleable__content"><pre>LinearRegression()</pre></div></div></div></div></div>
+
+
+
+
+```python
+##################################
+# Consolidating the regression coefficients
+##################################
+linear_regression_intercept = pd.DataFrame(zip(["INTERCEPT"], [linear_regression.intercept_]))
+linear_regression_predictors = pd.DataFrame(zip(X_train.columns, linear_regression.coef_))
+linear_regression_normal_equations = pd.concat([linear_regression_intercept, linear_regression_predictors])
+linear_regression_normal_equations.columns = ['Coefficient', 'Estimate']
+linear_regression_normal_equations.reset_index(inplace=True, drop=True)
+display(linear_regression_normal_equations)
+```
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Coefficient</th>
+      <th>Estimate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>INTERCEPT</td>
+      <td>-0.019692</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>LIFEXP</td>
+      <td>0.043273</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>DTHCMD</td>
+      <td>-0.333422</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>GDPCAP</td>
+      <td>0.441150</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
 
 ### 1.6.3 Gradient Descent Algorithm with Very High Learning Rate and Low Epoch Count <a class="anchor" id="1.6.3"></a>
 
@@ -5335,6 +5604,28 @@ display(cancer_rate_preprocessed_categorical_summary.sort_values(by=['T.Test.PVa
 * **[Article]** [Hypothesis Testing with Python: Step by Step Hands-On Tutorial with Practical Examples](https://towardsdatascience.com/hypothesis-testing-with-python-step-by-step-hands-on-tutorial-with-practical-examples-e805975ea96e) by Ece Işık Polat (Towards Data Science)
 * **[Article]** [17 Statistical Hypothesis Tests in Python (Cheat Sheet)](https://machinelearningmastery.com/statistical-hypothesis-tests-in-python-cheat-sheet/) by Jason Brownlee (Machine Learning Mastery)
 * **[Article]** [A Step-by-Step Guide to Hypothesis Testing in Python using Scipy](https://medium.com/@gabriel_renno/a-step-by-step-guide-to-hypothesis-testing-in-python-using-scipy-8eb5b696ab07) by Gabriel Rennó (Medium)
+* **[Article]** [Gradient Descent and Stochastic Gradient Descent in R](https://www.ocf.berkeley.edu/~janastas/stochastic-gradient-descent-in-r.html) by Jason Anastasopoulos
+* **[Article]** [Linear Regression Tutorial Using Gradient Descent for Machine Learning](https://machinelearningmastery.com/linear-regression-tutorial-using-gradient-descent-for-machine-learning/) by Jason Brownlee
+* **[Article]** [An Overview of Gradient Descent Optimization Algorithms](https://ruder.io/optimizing-gradient-descent/) by Sebastian Ruder
+* **[Article]** [What is Gradient Descent?](https://www.ibm.com/topics/gradient-descent) by IBM Team
+* **[Article]** [Gradient Descent in Machine Learning: A Basic Introduction](https://builtin.com/data-science/gradient-descent) by Niklas Donges
+* **[Article]** [Gradient Descent for Linear Regression Explained, Step by Step](https://machinelearningcompass.com/machine_learning_math/gradient_descent_for_linear_regression/) by Boris Giba
+* **[Article]** [Gradient Descent Explained Simply with Examples](https://vitalflux.com/gradient-descent-explained-simply-with-examples/) by Ajitesh Kumar
+* **[Article]** [Implementing the Gradient Descent Algorithm in R](https://www.r-bloggers.com/2017/02/implementing-the-gradient-descent-algorithm-in-r/) by Richter Walsh
+* **[Article]** [Regression via Gradient Descent in R](https://www.r-bloggers.com/2011/11/regression-via-gradient-descent-in-r/) by Matt Bogard
+* **[Article]** [Stochastic Gradient Descent](http://optimization.cbe.cornell.edu/index.php?title=Stochastic_gradient_descent) by Jonathon Price, Alfred Wong, Tiancheng Yuan, Joshua Mathew and Taiwo Olorunniwo
+* **[Article]** [Difference Between Batch Gradient Descent and Stochastic Gradient Descent](https://www.geeksforgeeks.org/difference-between-batch-gradient-descent-and-stochastic-gradient-descent/) by Geeks For Geeks Team
+* **[Article]** [Stochastic Gradient Descent Vs Gradient Descent: A Head-To-Head Comparison](https://sdsclub.com/stochastic-gradient-descent-vs-gradient-descent-a-head-to-head-comparison/) by SDS Club Team
+* **[Article]** [Differences Between Gradient, Stochastic and Mini Batch Gradient Descent](https://www.baeldung.com/cs/gradient-stochastic-and-mini-batch) by Baeldung
+* **[Article]** [Difference Between Backpropagation and Stochastic Gradient Descent](https://machinelearningmastery.com/difference-between-backpropagation-and-stochastic-gradient-descent/) by Jason Brownlee
+* **[Article]** [ML | Normal Equation in Linear Regression](https://www.geeksforgeeks.org/ml-normal-equation-in-linear-regression/) by Geeks For Geeks Team
+* **[Article]** [Derivation of the Normal Equation for Linear Regression](https://eli.thegreenplace.net/2014/derivation-of-the-normal-equation-for-linear-regression/) by Eli Bendersky
+* **[Article]** [Normal Equation](http://mlwiki.org/index.php/Normal_Equation) by ML Wiki Team
+* **[Article]** [Normal Equations](https://www.statlect.com/glossary/normal-equations#:~:text=In%20linear%20regression%20analysis%2C%20the%20normal%20equations%20are,first-order%20condition%20of%20the%20Least%20Squares%20minimization%20problem.) by Marco Taboga
+* **[Article]** [Fitting a Model via Closed-form Equations versus Gradient Descent Versus Stochastic Gradient Descent Versus Mini-Batch Learning. What is the Difference?](https://sebastianraschka.com/faq/docs/closed-form-vs-gd.html) by Sebastian Raschka
+* **[Article]** [Gradient Descent Versus Normal Equation For Regression Problems](https://pushkarasharma.github.io/2020/06/27/Gradient_vs_Normal.html) by Pushkara Sharma
+* **[Publication]** [New Methods for the Determination of Comet Orbits](https://www.semanticscholar.org/paper/Nouvelles-m%C3%A9thodes-pour-la-d%C3%A9termination-des-des-Legendre/21c9090e226ab449ffb608ddb2cb925911a61f24) by Adrien-Marie Legendre
+* **[Publication]** [General Method for the Resolution of a System of Simultaneous Equations](https://cs.uwaterloo.ca/~y328yu/classics/cauchy-en.pdf) by Augustine Cauchy
 * **[Publication]** [Data Quality for Machine Learning Tasks](https://journals.sagepub.com/doi/10.1177/0962280206074463) by Nitin Gupta, Shashank Mujumdar, Hima Patel, Satoshi Masuda, Naveen Panwar, Sambaran Bandyopadhyay, Sameep Mehta, Shanmukha Guttula, Shazia Afzal, Ruhi Sharma Mittal and Vitobha Munigala (KDD ’21: Proceedings of the 27th ACM SIGKDD Conference on Knowledge Discovery & Data Mining)
 * **[Publication]** [Overview and Importance of Data Quality for Machine Learning Tasks](https://dl.acm.org/doi/10.1145/3394486.3406477) by Abhinav Jain, Hima Patel, Lokesh Nagalapatti, Nitin Gupta, Sameep Mehta, Shanmukha Guttula, Shashank Mujumdar, Shazia Afzal, Ruhi Sharma Mittal and Vitobha Munigala (KDD ’20: Proceedings of the 26th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining)
 * **[Publication]** [Multiple Imputation of Discrete and Continuous Data by Fully Conditional Specification](https://journals.sagepub.com/doi/10.1177/0962280206074463) by Stef van Buuren (Statistical Methods in Medical Research)
