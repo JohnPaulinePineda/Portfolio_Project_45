@@ -5264,10 +5264,9 @@ display(cancer_rate_preprocessed_categorical_summary.sort_values(by=['T.Test.PVa
 
 ### 1.6.1 Premodelling Data Description <a class="anchor" id="1.6.1"></a>
 
-1. Among the predictor variables determined to have a statistically significant linear relationship between the <span style="color: #FF0000">CANRAT</span> target variable, only 6 were retained with absolute Pearson correlation coefficient values greater than 0.65. 
+1. Among the predictor variables determined to have a statistically significant linear relationship between the <span style="color: #FF0000">CANRAT</span> target variable, only 2 were retained with absolute Pearson correlation coefficient values greater than 0.70. 
     * <span style="color: #FF0000">GDPCAP</span>: Pearson.Correlation.Coefficient=+0.735, Correlation.PValue=0.000
     * <span style="color: #FF0000">LIFEXP</span>: Pearson.Correlation.Coefficient=+0.702, Correlation.PValue=0.000   
-    * <span style="color: #FF0000">DTHCMD</span>: Pearson.Correlation.Coefficient=-0.687, Correlation.PValue=0.000 
 
 
 
@@ -5277,7 +5276,7 @@ display(cancer_rate_preprocessed_categorical_summary.sort_values(by=['T.Test.PVa
 # and encoded categorical columns
 # after hypothesis testing
 ##################################
-cancer_rate_premodelling = cancer_rate_preprocessed.drop(['EPISCO','TUBINC','CO2EMI','AGRLND','POPDEN','GHGEMI','FORARE','POPGRO','URBPOP','HDICAT_VH','HDICAT_H','HDICAT_M','HDICAT_L'], axis=1)
+cancer_rate_premodelling = cancer_rate_preprocessed.drop(['DTHCMD','EPISCO','TUBINC','CO2EMI','AGRLND','POPDEN','GHGEMI','FORARE','POPGRO','URBPOP','HDICAT_VH','HDICAT_H','HDICAT_M','HDICAT_L'], axis=1)
 ```
 
 
@@ -5293,7 +5292,7 @@ display(cancer_rate_premodelling.shape)
     
 
 
-    (163, 4)
+    (163, 3)
 
 
 
@@ -5311,7 +5310,6 @@ display(cancer_rate_premodelling.dtypes)
 
     CANRAT    float64
     LIFEXP    float64
-    DTHCMD    float64
     GDPCAP    float64
     dtype: object
 
@@ -5347,7 +5345,6 @@ cancer_rate_premodelling.head()
       <th></th>
       <th>CANRAT</th>
       <th>LIFEXP</th>
-      <th>DTHCMD</th>
       <th>GDPCAP</th>
     </tr>
   </thead>
@@ -5356,35 +5353,30 @@ cancer_rate_premodelling.head()
       <th>0</th>
       <td>2.076468</td>
       <td>1.643195</td>
-      <td>-0.971464</td>
       <td>1.549766</td>
     </tr>
     <tr>
       <th>1</th>
       <td>1.962991</td>
       <td>1.487969</td>
-      <td>-1.091413</td>
       <td>1.407752</td>
     </tr>
     <tr>
       <th>2</th>
       <td>1.742760</td>
       <td>1.537044</td>
-      <td>-0.836295</td>
       <td>1.879374</td>
     </tr>
     <tr>
       <th>3</th>
       <td>1.690866</td>
       <td>0.664178</td>
-      <td>-0.903718</td>
       <td>1.685426</td>
     </tr>
     <tr>
       <th>4</th>
       <td>1.634224</td>
       <td>1.381877</td>
-      <td>-0.657145</td>
       <td>1.657777</td>
     </tr>
   </tbody>
@@ -5440,7 +5432,7 @@ display(X_train.shape)
     
 
 
-    (114, 3)
+    (114, 2)
 
 
 ### 1.6.2 Normal Equations <a class="anchor" id="1.6.2"></a>
@@ -5459,31 +5451,24 @@ display(X_train.shape)
 
 ```python
 ##################################
-# Defining the linear regression model
+# Defining the components
+# for matrix algebra computations
+# using Normal Equations
 ##################################
-linear_regression = LinearRegression()
-
-##################################
-# Fitting a linear regression model
-##################################
-linear_regression.fit(X_train, y_train)
+num_observations = X_train.shape[0]
+constant_array = np.ones(num_observations)
+x_train_matrix = np.array([constant_array,X_train.LIFEXP,X_train.GDPCAP]).T
 ```
-
-
-
-
-<style>#sk-container-id-1 {color: black;background-color: white;}#sk-container-id-1 pre{padding: 0;}#sk-container-id-1 div.sk-toggleable {background-color: white;}#sk-container-id-1 label.sk-toggleable__label {cursor: pointer;display: block;width: 100%;margin-bottom: 0;padding: 0.3em;box-sizing: border-box;text-align: center;}#sk-container-id-1 label.sk-toggleable__label-arrow:before {content: "▸";float: left;margin-right: 0.25em;color: #696969;}#sk-container-id-1 label.sk-toggleable__label-arrow:hover:before {color: black;}#sk-container-id-1 div.sk-estimator:hover label.sk-toggleable__label-arrow:before {color: black;}#sk-container-id-1 div.sk-toggleable__content {max-height: 0;max-width: 0;overflow: hidden;text-align: left;background-color: #f0f8ff;}#sk-container-id-1 div.sk-toggleable__content pre {margin: 0.2em;color: black;border-radius: 0.25em;background-color: #f0f8ff;}#sk-container-id-1 input.sk-toggleable__control:checked~div.sk-toggleable__content {max-height: 200px;max-width: 100%;overflow: auto;}#sk-container-id-1 input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {content: "▾";}#sk-container-id-1 div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 input.sk-hidden--visually {border: 0;clip: rect(1px 1px 1px 1px);clip: rect(1px, 1px, 1px, 1px);height: 1px;margin: -1px;overflow: hidden;padding: 0;position: absolute;width: 1px;}#sk-container-id-1 div.sk-estimator {font-family: monospace;background-color: #f0f8ff;border: 1px dotted black;border-radius: 0.25em;box-sizing: border-box;margin-bottom: 0.5em;}#sk-container-id-1 div.sk-estimator:hover {background-color: #d4ebff;}#sk-container-id-1 div.sk-parallel-item::after {content: "";width: 100%;border-bottom: 1px solid gray;flex-grow: 1;}#sk-container-id-1 div.sk-label:hover label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 div.sk-serial::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: 0;}#sk-container-id-1 div.sk-serial {display: flex;flex-direction: column;align-items: center;background-color: white;padding-right: 0.2em;padding-left: 0.2em;position: relative;}#sk-container-id-1 div.sk-item {position: relative;z-index: 1;}#sk-container-id-1 div.sk-parallel {display: flex;align-items: stretch;justify-content: center;background-color: white;position: relative;}#sk-container-id-1 div.sk-item::before, #sk-container-id-1 div.sk-parallel-item::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: -1;}#sk-container-id-1 div.sk-parallel-item {display: flex;flex-direction: column;z-index: 1;position: relative;background-color: white;}#sk-container-id-1 div.sk-parallel-item:first-child::after {align-self: flex-end;width: 50%;}#sk-container-id-1 div.sk-parallel-item:last-child::after {align-self: flex-start;width: 50%;}#sk-container-id-1 div.sk-parallel-item:only-child::after {width: 0;}#sk-container-id-1 div.sk-dashed-wrapped {border: 1px dashed gray;margin: 0 0.4em 0.5em 0.4em;box-sizing: border-box;padding-bottom: 0.4em;background-color: white;}#sk-container-id-1 div.sk-label label {font-family: monospace;font-weight: bold;display: inline-block;line-height: 1.2em;}#sk-container-id-1 div.sk-label-container {text-align: center;}#sk-container-id-1 div.sk-container {/* jupyter's `normalize.less` sets `[hidden] { display: none; }` but bootstrap.min.css set `[hidden] { display: none !important; }` so we also need the `!important` here to be able to override the default hidden behavior on the sphinx rendered scikit-learn.org. See: https://github.com/scikit-learn/scikit-learn/issues/21755 */display: inline-block !important;position: relative;}#sk-container-id-1 div.sk-text-repr-fallback {display: none;}</style><div id="sk-container-id-1" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>LinearRegression()</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-1" type="checkbox" checked><label for="sk-estimator-id-1" class="sk-toggleable__label sk-toggleable__label-arrow">LinearRegression</label><div class="sk-toggleable__content"><pre>LinearRegression()</pre></div></div></div></div></div>
-
-
 
 
 ```python
 ##################################
 # Consolidating the regression coefficients
+# obtained using the Normal Equations
 ##################################
-linear_regression_intercept = pd.DataFrame(zip(["INTERCEPT"], [linear_regression.intercept_]))
-linear_regression_predictors = pd.DataFrame(zip(X_train.columns, linear_regression.coef_))
-linear_regression_normal_equations = pd.concat([linear_regression_intercept, linear_regression_predictors])
+linear_regression_coefficients = pd.DataFrame(["INTERCEPT","LIFEXP","GDPCAP"])
+linear_regression_estimates = pd.DataFrame(np.linalg.inv(np.dot(x_train_matrix.T,x_train_matrix)).dot(x_train_matrix.T).dot(y_train))
+linear_regression_normal_equations = pd.concat([linear_regression_coefficients, linear_regression_estimates], axis=1)
 linear_regression_normal_equations.columns = ['Coefficient', 'Estimate']
 linear_regression_normal_equations.reset_index(inplace=True, drop=True)
 display(linear_regression_normal_equations)
@@ -5516,39 +5501,779 @@ display(linear_regression_normal_equations)
     <tr>
       <th>0</th>
       <td>INTERCEPT</td>
-      <td>-0.019692</td>
+      <td>-0.000606</td>
     </tr>
     <tr>
       <th>1</th>
       <td>LIFEXP</td>
-      <td>0.043273</td>
+      <td>0.233418</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>DTHCMD</td>
-      <td>-0.333422</td>
-    </tr>
-    <tr>
-      <th>3</th>
       <td>GDPCAP</td>
-      <td>0.441150</td>
+      <td>0.508083</td>
     </tr>
   </tbody>
 </table>
 </div>
 
 
+
+```python
+##################################
+# Defining the linear regression model
+# using the Scikit-Learn package
+##################################
+linear_regression = LinearRegression()
+
+##################################
+# Fitting a linear regression model
+##################################
+linear_regression.fit(X_train, y_train)
+```
+
+
+
+
+<style>#sk-container-id-1 {color: black;background-color: white;}#sk-container-id-1 pre{padding: 0;}#sk-container-id-1 div.sk-toggleable {background-color: white;}#sk-container-id-1 label.sk-toggleable__label {cursor: pointer;display: block;width: 100%;margin-bottom: 0;padding: 0.3em;box-sizing: border-box;text-align: center;}#sk-container-id-1 label.sk-toggleable__label-arrow:before {content: "▸";float: left;margin-right: 0.25em;color: #696969;}#sk-container-id-1 label.sk-toggleable__label-arrow:hover:before {color: black;}#sk-container-id-1 div.sk-estimator:hover label.sk-toggleable__label-arrow:before {color: black;}#sk-container-id-1 div.sk-toggleable__content {max-height: 0;max-width: 0;overflow: hidden;text-align: left;background-color: #f0f8ff;}#sk-container-id-1 div.sk-toggleable__content pre {margin: 0.2em;color: black;border-radius: 0.25em;background-color: #f0f8ff;}#sk-container-id-1 input.sk-toggleable__control:checked~div.sk-toggleable__content {max-height: 200px;max-width: 100%;overflow: auto;}#sk-container-id-1 input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {content: "▾";}#sk-container-id-1 div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 input.sk-hidden--visually {border: 0;clip: rect(1px 1px 1px 1px);clip: rect(1px, 1px, 1px, 1px);height: 1px;margin: -1px;overflow: hidden;padding: 0;position: absolute;width: 1px;}#sk-container-id-1 div.sk-estimator {font-family: monospace;background-color: #f0f8ff;border: 1px dotted black;border-radius: 0.25em;box-sizing: border-box;margin-bottom: 0.5em;}#sk-container-id-1 div.sk-estimator:hover {background-color: #d4ebff;}#sk-container-id-1 div.sk-parallel-item::after {content: "";width: 100%;border-bottom: 1px solid gray;flex-grow: 1;}#sk-container-id-1 div.sk-label:hover label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 div.sk-serial::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: 0;}#sk-container-id-1 div.sk-serial {display: flex;flex-direction: column;align-items: center;background-color: white;padding-right: 0.2em;padding-left: 0.2em;position: relative;}#sk-container-id-1 div.sk-item {position: relative;z-index: 1;}#sk-container-id-1 div.sk-parallel {display: flex;align-items: stretch;justify-content: center;background-color: white;position: relative;}#sk-container-id-1 div.sk-item::before, #sk-container-id-1 div.sk-parallel-item::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: -1;}#sk-container-id-1 div.sk-parallel-item {display: flex;flex-direction: column;z-index: 1;position: relative;background-color: white;}#sk-container-id-1 div.sk-parallel-item:first-child::after {align-self: flex-end;width: 50%;}#sk-container-id-1 div.sk-parallel-item:last-child::after {align-self: flex-start;width: 50%;}#sk-container-id-1 div.sk-parallel-item:only-child::after {width: 0;}#sk-container-id-1 div.sk-dashed-wrapped {border: 1px dashed gray;margin: 0 0.4em 0.5em 0.4em;box-sizing: border-box;padding-bottom: 0.4em;background-color: white;}#sk-container-id-1 div.sk-label label {font-family: monospace;font-weight: bold;display: inline-block;line-height: 1.2em;}#sk-container-id-1 div.sk-label-container {text-align: center;}#sk-container-id-1 div.sk-container {/* jupyter's `normalize.less` sets `[hidden] { display: none; }` but bootstrap.min.css set `[hidden] { display: none !important; }` so we also need the `!important` here to be able to override the default hidden behavior on the sphinx rendered scikit-learn.org. See: https://github.com/scikit-learn/scikit-learn/issues/21755 */display: inline-block !important;position: relative;}#sk-container-id-1 div.sk-text-repr-fallback {display: none;}</style><div id="sk-container-id-1" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>LinearRegression()</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-1" type="checkbox" checked><label for="sk-estimator-id-1" class="sk-toggleable__label sk-toggleable__label-arrow">LinearRegression</label><div class="sk-toggleable__content"><pre>LinearRegression()</pre></div></div></div></div></div>
+
+
+
+
+```python
+##################################
+# Consolidating the regression coefficients
+# obtained using the Scikit-Learn package
+##################################
+linear_regression_intercept = pd.DataFrame(zip(["INTERCEPT"], [linear_regression.intercept_]))
+linear_regression_predictors = pd.DataFrame(zip(X_train.columns, linear_regression.coef_))
+linear_regression_scikitlearn_computations = pd.concat([linear_regression_intercept, linear_regression_predictors], axis=0)
+linear_regression_scikitlearn_computations.columns = ['Coefficient', 'Estimate']
+linear_regression_scikitlearn_computations.reset_index(inplace=True, drop=True)
+display(linear_regression_scikitlearn_computations)
+```
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Coefficient</th>
+      <th>Estimate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>INTERCEPT</td>
+      <td>-0.000606</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>LIFEXP</td>
+      <td>0.233418</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>GDPCAP</td>
+      <td>0.508083</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+```python
+##################################
+# Setting the regression coefficients
+# determined using normal equations
+# as the target coefficient estimates
+##################################
+intercept = -0.000606
+theta_1 = 0.233418
+theta_2 = 0.508083
+```
+
 ### 1.6.3 Gradient Descent Algorithm with Very High Learning Rate and Low Epoch Count <a class="anchor" id="1.6.3"></a>
+
+
+```python
+##################################
+# Formulating a function
+# for computing the regression coefficients
+# using gradient descent
+##################################
+def gradient_descent(learning_rate, num_iterations, theta_initial):
+    # Setting the initialization values
+    # Initializing the coefficient estimates
+    theta = theta_initial
+    # Initializing the gradient descent trajectory path
+    theta_path = np.zeros((num_iterations+1,3))
+    theta_path[0,:]= theta_initial
+    # Initializing the loss function values
+    loss_vector = np.zeros(num_iterations)
+    ## Implementing the main Gradient Descent loop givne a fixed number of iterations
+    for i in range(num_iterations):
+        # Generating predictions
+        y_predicted = np.dot(theta.T,x_train_matrix.T)
+        # Computing for the loss function values
+        loss_vector[i] = np.sum((y_train-y_predicted)**2)
+        # Summing up the gradients across all observations and divide by the number of observations
+        gradient_vector = (y_train-y_predicted).dot(x_train_matrix)/num_observations  
+        # Updating the gradients
+        gradient_vector = gradient_vector
+        # Updating the coefficient estimates
+        theta = theta + learning_rate*gradient_vector
+        # Updating the trajectory of the gradient descent process
+        theta_path[i+1,:]=theta
+    return theta_path, loss_vector
+
+##################################
+# Formulating a function
+# for plotting the gradient descent trajectory
+# with respect to the initialized
+# and target coefficient estimates
+##################################
+target_coefficient = [intercept, theta_1, theta_2]
+target_coefficient_name = ["INTERCEPT","LIFEXP","GDPCAP"]
+def plot_ij(theta_path, i, j, ax):
+    ax.plot(target_coefficient[i], target_coefficient[j],
+            marker='p', markersize=15, label='target coefficient', 
+            color='#778899')
+    ax.plot(theta_path[:, i],theta_path[:, j],
+            color='k', linestyle='--', marker='^', 
+            markersize=5, markevery=50)
+    ax.plot(theta_path[0, i], theta_path[0, j], marker='d', 
+            markersize=15, label='start', color='#F08080')
+    ax.plot(theta_path[-1, i], theta_path[-1, j], marker='o', 
+            markersize=15, label='finish', color='#F08080')
+    ax.set(
+        xlabel=target_coefficient_name[i],
+        ylabel=target_coefficient_name[j])
+    ax.axis('equal')
+    ax.grid(True)
+    ax.legend(loc='upper left')
+    
+##################################
+# Consolidating all 
+# gradient descent trajectory plots
+# by pairwise combinations
+# of regression coefficients
+##################################
+def plot_all(theta_path, loss_vector, learning_rate, num_iterations, theta_initial, gdtype='Gradient Descent'):
+    fig = plt.figure(figsize=(12, 12))
+    title = '{gdtype}: Learning Rate = {lr} | Epoch Count = {iters}'
+    title = title.format(gdtype=gdtype, lr=learning_rate, 
+                         iters=num_iterations, initial=theta_initial)
+    fig.suptitle(title, fontsize=15)
+    ax = fig.add_subplot(2, 2, 1)
+    plot_ij(theta_path, 0, 1, ax)
+    ax = fig.add_subplot(2, 2, 2)
+    plot_ij(theta_path, 0, 2, ax)
+    ax = fig.add_subplot(2, 2, 3)
+    plot_ij(theta_path, 1, 2, ax)
+    ax = fig.add_subplot(2, 2, 4)
+    ax.plot(loss_vector)
+    ax.set_ylim([0, 5000])
+    ax.set_xlim([0, 300])
+    ax.set(xlabel='Iterations', ylabel='Squared Loss')
+    ax.grid(True)
+```
+
+
+```python
+##################################
+# Setting the initial parameters
+##################################
+theta_initial = np.array([3,3,3])
+##################################
+# Using a very high learning rate
+##################################
+learning_rate = 1.00
+##################################
+# Using a low epoch count
+##################################
+num_iterations = 30
+
+##################################
+# Implementing the gradient descent process
+# for determining the regression coefficients
+##################################
+theta_path, loss_vector = gradient_descent(learning_rate, num_iterations, theta_initial)
+
+##################################
+# Consolidating the gradient descent
+# trajectory plots in a 3D parameter space
+# for each pair of regression coefficients
+##################################
+plot_all(theta_path, loss_vector, learning_rate, num_iterations, theta_initial)
+```
+
+
+    
+![png](output_176_0.png)
+    
+
+
+
+```python
+##################################
+# Consolidating the regression coefficients
+# obtained using the Gradient Descent process
+# with very high learning rate
+# and low epoch count
+##################################
+linear_regression_coefficients = pd.DataFrame(["INTERCEPT","LIFEXP","GDPCAP"])
+linear_regression_vhlearningrate_lepochcount = pd.DataFrame(theta_path[-1])
+linear_regression_gradientdescent_vhlearningrate_lepochcount = pd.concat([linear_regression_coefficients, linear_regression_vhlearningrate_lepochcount], axis=1)
+linear_regression_gradientdescent_vhlearningrate_lepochcount.columns = ['Coefficient', 'Estimate']
+linear_regression_gradientdescent_vhlearningrate_lepochcount.reset_index(inplace=True, drop=True)
+display(linear_regression_gradientdescent_vhlearningrate_lepochcount)
+```
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Coefficient</th>
+      <th>Estimate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>INTERCEPT</td>
+      <td>0.008008</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>LIFEXP</td>
+      <td>0.281761</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>GDPCAP</td>
+      <td>0.549961</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
 
 ### 1.6.4 Gradient Descent Algorithm with Very High Learning Rate and High Epoch Count <a class="anchor" id="1.6.4"></a>
 
+
+```python
+##################################
+# Setting the initial parameters
+##################################
+theta_initial = np.array([3,3,3])
+##################################
+# Using a very high learning rate
+##################################
+learning_rate = 1.00
+##################################
+# Using a high epoch count
+##################################
+num_iterations = 300
+
+##################################
+# Implementing the gradient descent process
+# for determining the regression coefficients
+##################################
+theta_path, loss_vector = gradient_descent(learning_rate, num_iterations, theta_initial)
+
+##################################
+# Consolidating the gradient descent
+# trajectory plots in a 3D parameter space
+# for each pair of regression coefficients
+##################################
+plot_all(theta_path, loss_vector, learning_rate, num_iterations, theta_initial)
+```
+
+
+    
+![png](output_179_0.png)
+    
+
+
+
+```python
+##################################
+# Consolidating the regression coefficients
+# obtained using the Gradient Descent process
+# with very high learning rate
+# and high epoch count
+##################################
+linear_regression_coefficients = pd.DataFrame(["INTERCEPT","LIFEXP","GDPCAP"])
+linear_regression_vhlearningrate_hepochcount = pd.DataFrame(theta_path[-1])
+linear_regression_gradientdescent_vhlearningrate_hepochcount = pd.concat([linear_regression_coefficients, linear_regression_vhlearningrate_hepochcount], axis=1)
+linear_regression_gradientdescent_vhlearningrate_hepochcount.columns = ['Coefficient', 'Estimate']
+linear_regression_gradientdescent_vhlearningrate_hepochcount.reset_index(inplace=True, drop=True)
+display(linear_regression_gradientdescent_vhlearningrate_hepochcount)
+```
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Coefficient</th>
+      <th>Estimate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>INTERCEPT</td>
+      <td>-0.000606</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>LIFEXP</td>
+      <td>0.233418</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>GDPCAP</td>
+      <td>0.508083</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
 ### 1.6.5 Gradient Descent Algorithm with High Learning Rate and Low Epoch Count <a class="anchor" id="1.6.5"></a>
+
+
+```python
+##################################
+# Setting the initial parameters
+##################################
+theta_initial = np.array([3,3,3])
+##################################
+# Using a high learning rate
+##################################
+learning_rate = 0.1
+##################################
+# Using a low epoch count
+##################################
+num_iterations = 30
+
+##################################
+# Implementing the gradient descent process
+# for determining the regression coefficients
+##################################
+theta_path, loss_vector = gradient_descent(learning_rate, num_iterations, theta_initial)
+
+##################################
+# Consolidating the gradient descent
+# trajectory plots in a 3D parameter space
+# for each pair of regression coefficients
+##################################
+plot_all(theta_path, loss_vector, learning_rate, num_iterations, theta_initial)
+```
+
+
+    
+![png](output_182_0.png)
+    
+
+
+
+```python
+##################################
+# Consolidating the regression coefficients
+# obtained using the Gradient Descent process
+# with high learning rate
+# and low epoch count
+##################################
+linear_regression_coefficients = pd.DataFrame(["INTERCEPT","LIFEXP","GDPCAP"])
+linear_regression_hlearningrate_lepochcount = pd.DataFrame(theta_path[-1])
+linear_regression_gradientdescent_hlearningrate_lepochcount = pd.concat([linear_regression_coefficients, linear_regression_hlearningrate_lepochcount], axis=1)
+linear_regression_gradientdescent_hlearningrate_lepochcount.columns = ['Coefficient', 'Estimate']
+linear_regression_gradientdescent_hlearningrate_lepochcount.reset_index(inplace=True, drop=True)
+display(linear_regression_gradientdescent_hlearningrate_lepochcount)
+```
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Coefficient</th>
+      <th>Estimate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>INTERCEPT</td>
+      <td>0.110662</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>LIFEXP</td>
+      <td>0.317843</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>GDPCAP</td>
+      <td>0.413052</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
 
 ### 1.6.6 Gradient Descent Algorithm with High Learning Rate and High Epoch Count <a class="anchor" id="1.6.6"></a>
 
+
+```python
+##################################
+# Setting the initial parameters
+##################################
+theta_initial = np.array([3,3,3])
+##################################
+# Using a high learning rate
+##################################
+learning_rate = 0.1
+##################################
+# Using a high epoch count
+##################################
+num_iterations = 300
+
+##################################
+# Implementing the gradient descent process
+# for determining the regression coefficients
+##################################
+theta_path, loss_vector = gradient_descent(learning_rate, num_iterations, theta_initial)
+
+##################################
+# Consolidating the gradient descent
+# trajectory plots in a 3D parameter space
+# for each pair of regression coefficients
+##################################
+plot_all(theta_path, loss_vector, learning_rate, num_iterations, theta_initial)
+```
+
+
+    
+![png](output_185_0.png)
+    
+
+
+
+```python
+##################################
+# Consolidating the regression coefficients
+# obtained using the Gradient Descent process
+# with high learning rate
+# and high epoch count
+##################################
+linear_regression_coefficients = pd.DataFrame(["INTERCEPT","LIFEXP","GDPCAP"])
+linear_regression_hlearningrate_hepochcount = pd.DataFrame(theta_path[-1])
+linear_regression_gradientdescent_hlearningrate_hepochcount = pd.concat([linear_regression_coefficients, linear_regression_hlearningrate_hepochcount], axis=1)
+linear_regression_gradientdescent_hlearningrate_hepochcount.columns = ['Coefficient', 'Estimate']
+linear_regression_gradientdescent_hlearningrate_hepochcount.reset_index(inplace=True, drop=True)
+display(linear_regression_gradientdescent_hlearningrate_hepochcount)
+```
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Coefficient</th>
+      <th>Estimate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>INTERCEPT</td>
+      <td>-0.000585</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>LIFEXP</td>
+      <td>0.237033</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>GDPCAP</td>
+      <td>0.504420</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
 ### 1.6.7 Gradient Descent Algorithm with Low Learning Rate and Low Epoch Count <a class="anchor" id="1.6.7"></a>
 
+
+```python
+##################################
+# Setting the initial parameters
+##################################
+theta_initial = np.array([3,3,3])
+##################################
+# Using a low learning rate
+##################################
+learning_rate = 0.01
+##################################
+# Using a low epoch count
+##################################
+num_iterations = 30
+
+##################################
+# Implementing the gradient descent process
+# for determining the regression coefficients
+##################################
+theta_path, loss_vector = gradient_descent(learning_rate, num_iterations, theta_initial)
+
+##################################
+# Consolidating the gradient descent
+# trajectory plots in a 3D parameter space
+# for each pair of regression coefficients
+##################################
+plot_all(theta_path, loss_vector, learning_rate, num_iterations, theta_initial)
+```
+
+
+    
+![png](output_188_0.png)
+    
+
+
+
+```python
+##################################
+# Consolidating the regression coefficients
+# obtained using the Gradient Descent process
+# with low learning rate
+# and low epoch count
+##################################
+linear_regression_coefficients = pd.DataFrame(["INTERCEPT","LIFEXP","GDPCAP"])
+linear_regression_llearningrate_lepochcount = pd.DataFrame(theta_path[-1])
+linear_regression_gradientdescent_llearningrate_lepochcount = pd.concat([linear_regression_coefficients, linear_regression_llearningrate_lepochcount], axis=1)
+linear_regression_gradientdescent_llearningrate_lepochcount.columns = ['Coefficient', 'Estimate']
+linear_regression_gradientdescent_llearningrate_lepochcount.reset_index(inplace=True, drop=True)
+display(linear_regression_gradientdescent_llearningrate_lepochcount)
+```
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Coefficient</th>
+      <th>Estimate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>INTERCEPT</td>
+      <td>2.133856</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>LIFEXP</td>
+      <td>1.811625</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>GDPCAP</td>
+      <td>1.831115</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
 ### 1.6.8 Gradient Descent Algorithm with Low Learning Rate and High Epoch Count <a class="anchor" id="1.6.8"></a>
+
+
+```python
+##################################
+# Setting the initial parameters
+##################################
+theta_initial = np.array([3,3,3])
+##################################
+# Using a low learning rate
+##################################
+learning_rate = 0.01
+##################################
+# Using a high epoch count
+##################################
+num_iterations = 300
+
+##################################
+# Implementing the gradient descent process
+# for determining the regression coefficients
+##################################
+theta_path, loss_vector = gradient_descent(learning_rate, num_iterations, theta_initial)
+
+##################################
+# Consolidating the gradient descent
+# trajectory plots in a 3D parameter space
+# for each pair of regression coefficients
+##################################
+plot_all(theta_path, loss_vector, learning_rate, num_iterations, theta_initial)
+```
+
+
+    
+![png](output_191_0.png)
+    
+
+
+
+```python
+##################################
+# Consolidating the regression coefficients
+# obtained using the Gradient Descent process
+# with low learning rate
+# and high epoch count
+##################################
+linear_regression_coefficients = pd.DataFrame(["INTERCEPT","LIFEXP","GDPCAP"])
+linear_regression_llearningrate_hepochcount = pd.DataFrame(theta_path[-1])
+linear_regression_gradientdescent_llearningrate_hepochcount = pd.concat([linear_regression_coefficients, linear_regression_llearningrate_hepochcount], axis=1)
+linear_regression_gradientdescent_llearningrate_hepochcount.columns = ['Coefficient', 'Estimate']
+linear_regression_gradientdescent_llearningrate_hepochcount.reset_index(inplace=True, drop=True)
+display(linear_regression_gradientdescent_llearningrate_hepochcount)
+```
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Coefficient</th>
+      <th>Estimate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>INTERCEPT</td>
+      <td>0.128061</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>LIFEXP</td>
+      <td>0.320584</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>GDPCAP</td>
+      <td>0.415517</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
 
 # 2. Summary <a class="anchor" id="Summary"></a>
 
