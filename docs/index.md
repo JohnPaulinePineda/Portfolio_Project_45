@@ -39,6 +39,8 @@
 
 This project manually implements the **Gradient Descent** algorithm using various helpful packages in <mark style="background-color: #CCECFF"><b>Python</b></mark>, and evaluates a range of values for the learning rate and epoch count parameters to optimally estimate the coefficients of a linear regression model. The cost function optimization profiles of the different candidate parameter settings were compared, with the resulting estimated coefficients assessed against those obtained using normal equations which served as the reference baseline values. All results were consolidated in a [<span style="color: #FF0000"><b>Summary</b></span>](#Summary) presented at the end of the document.
 
+[Linear Regression](https://link.springer.com/book/10.1007/978-1-4757-3462-1) explores the linear relationship between a scalar response and one or more covariates by having the conditional mean of the dependent variable be an affine function of the independent variables. The relationship is modeled through a disturbance term which represents an unobserved random variable that adds noise. The algorithm is typically formulated from the data using the least squares method which seeks to estimate the coefficients by minimizing the squared residual function. The linear equation assigns one scale factor represented by a coefficient to each covariate and an additional coefficient called the intercept or the bias coefficient which gives the line an additional degree of freedom allowing to move up and down a two-dimensional plot.
+
 [Regression coefficients](https://link.springer.com/book/10.1007/978-1-4757-3462-1) represent the changes in the independent variable which explain the variation of the dependent variable in the model. The methods applied in this study attempt to estimate the unknown model coefficients by optimizing a loss function - that which measures the quality of the estimated parameters based on how well the model-induced scores agree with the ground truth labels in the data set.
 
 [Gradient descent](https://link.springer.com/book/10.1007/978-1-4757-3462-1) minimizes the loss function parameterized by the model’s coefficients based on the direction and learning rate factors which determine the partial derivative calculations of future iterations, allowing the algorithm to gradually arrive at the local or global minimum considered the point of convergence. This particular implementation used Batch Gradient Descent which computes the gradient of the loss function with respect to the parameters for the entire data set. A very high learning rate (also referred to as step size or the alpha) and low epoch count were applied resulting in larger steps with lesser risks of overshooting the minimum due to a lower number of iterations.
@@ -5262,15 +5264,11 @@ display(cancer_rate_preprocessed_categorical_summary.sort_values(by=['T.Test.PVa
 
 ### 1.6.1 Premodelling Data Description <a class="anchor" id="1.6.1"></a>
 
-1. Among the 10 numeric variables determined to have a statistically significant linear relationship between the <span style="color: #FF0000">CANRAT</span> target variable, only 6 were retained with absolute Pearson correlation coefficient values greater than 0.50. 
+1. Among the predictor variables determined to have a statistically significant linear relationship between the <span style="color: #FF0000">CANRAT</span> target variable, only 6 were retained with absolute Pearson correlation coefficient values greater than 0.65. 
     * <span style="color: #FF0000">GDPCAP</span>: Pearson.Correlation.Coefficient=+0.735, Correlation.PValue=0.000
     * <span style="color: #FF0000">LIFEXP</span>: Pearson.Correlation.Coefficient=+0.702, Correlation.PValue=0.000   
     * <span style="color: #FF0000">DTHCMD</span>: Pearson.Correlation.Coefficient=-0.687, Correlation.PValue=0.000 
-    * <span style="color: #FF0000">EPISCO</span>: Pearson.Correlation.Coefficient=+0.648, Correlation.PValue=0.000 
-    * <span style="color: #FF0000">TUBINC</span>: Pearson.Correlation.Coefficient=-0.628, Correlation.PValue=0.000 
-    * <span style="color: #FF0000">CO2EMI</span>: Pearson.Correlation.Coefficient=+0.585, Correlation.PValue=0.000  
-2. Among the 4 4 categorical predictors determined to have a a statistically significant difference between the means of <span style="color: #FF0000">CANRAT</span> measuremens obtained from groups 0 and 1, only 1 was retained with absolute T-Test statistics greater than 10.
-    * <span style="color: #FF0000">HDICAT_VH</span>: T.Test.Statistic=-10.605, T.Test.PValue=0.000
+
 
 
 ```python
@@ -5447,6 +5445,17 @@ display(X_train.shape)
 
 ### 1.6.2 Normal Equations <a class="anchor" id="1.6.2"></a>
 
+[Normal Equations](https://www.semanticscholar.org/paper/Nouvelles-m%C3%A9thodes-pour-la-d%C3%A9termination-des-des-Legendre/21c9090e226ab449ffb608ddb2cb925911a61f24) are a system of equations whose solution is the Ordinary Least Squares (OLS) estimator of the regression coefficients and which are derived from the first-order condition of the least squares minimization problem. These equations are obtained by setting equal to zero the partial derivatives of the sum of squared errors (least squares). This approach is a closed-form solution and a one-step algorithm used to analytically find the coefficients that minimize the loss function.
+
+1. The [linear regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html) from the <mark style="background-color: #CCECFF"><b>sklearn.linear_model</b></mark> Python library API was implemented. 
+2. Applying normal equations, the estimated linear regression coefficients for the given data are as follows:
+    * <span style="color: #FF0000">INTERCEPT</span> = -0.01969
+    * <span style="color: #FF0000">LIFEXP</span> = +0.04327
+    * <span style="color: #FF0000">DTHCMD</span> = -0.33342
+    * <span style="color: #FF0000">GDPCAP</span> = +0.44115
+3. These estimated coefficients will be the baseline values from which all gradient descent algorithm-derived coefficients will be compared with.
+
+
 
 ```python
 ##################################
@@ -5566,6 +5575,9 @@ display(linear_regression_normal_equations)
 * **[Python Library API]** [sklearn.impute](https://scikit-learn.org/stable/modules/classes.html#module-sklearn.impute) by Scikit-Learn Team
 * **[Python Library API]** [sklearn.linear_model](https://scikit-learn.org/stable/modules/classes.html#module-sklearn.linear_model) by Scikit-Learn Team
 * **[Python Library API]** [sklearn.preprocessing](https://scikit-learn.org/stable/modules/classes.html#module-sklearn.preprocessing) by Scikit-Learn Team
+* **[Python Library API]** [sklearn.metrics](https://scikit-learn.org/stable/modules/model_evaluation.html) by Scikit-Learn Team
+* **[Python Library API]** [sklearn.model_selection](https://scikit-learn.org/stable/model_selection.html) by Scikit-Learn Team
+* **[Python Library API]** [sklearn.pipeline](https://scikit-learn.org/stable/modules/compose.html) by Scikit-Learn Team
 * **[Python Library API]** [scipy](https://docs.scipy.org/doc/scipy/) by SciPy Team
 * **[Article]** [Step-by-Step Exploratory Data Analysis (EDA) using Python](https://www.analyticsvidhya.com/blog/2022/07/step-by-step-exploratory-data-analysis-eda-using-python/#:~:text=Exploratory%20Data%20Analysis%20(EDA)%20with,distributions%20using%20Python%20programming%20language.) by Malamahadevan Mahadevan (Analytics Vidhya)
 * **[Article]** [Exploratory Data Analysis in Python — A Step-by-Step Process](https://towardsdatascience.com/exploratory-data-analysis-in-python-a-step-by-step-process-d0dfa6bf94ee) by Andrea D'Agostino (Towards Data Science)
