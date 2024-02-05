@@ -30,6 +30,7 @@
         * [1.6.6 Gradient Descent Algorithm with High Learning Rate and High Epoch Count](#1.6.6)
         * [1.6.7 Gradient Descent Algorithm with Low Learning Rate and Low Epoch Count](#1.6.7)
         * [1.6.8 Gradient Descent Algorithm with Low Learning Rate and High Epoch Count](#1.6.8)
+    * [1.7 Consolidated Findings](#1.7)
 * [**2. Summary**](#Summary)   
 * [**3. References**](#References)
 
@@ -5547,8 +5548,11 @@ linear_regression.fit(X_train, y_train)
 ##################################
 linear_regression_intercept = pd.DataFrame(zip(["INTERCEPT"], [linear_regression.intercept_]))
 linear_regression_predictors = pd.DataFrame(zip(X_train.columns, linear_regression.coef_))
-linear_regression_scikitlearn_computations = pd.concat([linear_regression_intercept, linear_regression_predictors], axis=0)
-linear_regression_scikitlearn_computations.columns = ['Coefficient', 'Estimate']
+linear_regression_scikitlearn_estimates = pd.concat([linear_regression_intercept, linear_regression_predictors], axis=0)
+linear_regression_scikitlearn_estimates.reset_index(inplace=True, drop=True)
+linear_regression_method = pd.DataFrame(["Normal_Equations"]*3)
+linear_regression_scikitlearn_computations = pd.concat([linear_regression_scikitlearn_estimates,linear_regression_method], axis=1)
+linear_regression_scikitlearn_computations.columns = ['Coefficient', 'Estimate','Method']
 linear_regression_scikitlearn_computations.reset_index(inplace=True, drop=True)
 display(linear_regression_scikitlearn_computations)
 ```
@@ -5574,6 +5578,7 @@ display(linear_regression_scikitlearn_computations)
       <th></th>
       <th>Coefficient</th>
       <th>Estimate</th>
+      <th>Method</th>
     </tr>
   </thead>
   <tbody>
@@ -5581,16 +5586,19 @@ display(linear_regression_scikitlearn_computations)
       <th>0</th>
       <td>INTERCEPT</td>
       <td>-0.000606</td>
+      <td>Normal_Equations</td>
     </tr>
     <tr>
       <th>1</th>
       <td>LIFEXP</td>
       <td>0.233418</td>
+      <td>Normal_Equations</td>
     </tr>
     <tr>
       <th>2</th>
       <td>GDPCAP</td>
       <td>0.508083</td>
+      <td>Normal_Equations</td>
     </tr>
   </tbody>
 </table>
@@ -5766,10 +5774,14 @@ loss_vector_vhlearningrate_lepochcount
 ##################################
 linear_regression_coefficients = pd.DataFrame(["INTERCEPT","LIFEXP","GDPCAP"])
 linear_regression_vhlearningrate_lepochcount = pd.DataFrame(theta_path[-1])
-linear_regression_gradientdescent_vhlearningrate_lepochcount = pd.concat([linear_regression_coefficients, linear_regression_vhlearningrate_lepochcount], axis=1)
-linear_regression_gradientdescent_vhlearningrate_lepochcount.columns = ['Coefficient', 'Estimate']
+linear_regression_vhlearningrate_lepochcount_method = pd.DataFrame(["VeryHighLearningRate_LowEpochCount"]*3)
+linear_regression_gradientdescent_vhlearningrate_lepochcount = pd.concat([linear_regression_coefficients, 
+                                                                          linear_regression_vhlearningrate_lepochcount,
+                                                                          linear_regression_vhlearningrate_lepochcount_method], axis=1)
+linear_regression_gradientdescent_vhlearningrate_lepochcount.columns = ['Coefficient', 'Estimate', 'Method']
 linear_regression_gradientdescent_vhlearningrate_lepochcount.reset_index(inplace=True, drop=True)
 display(linear_regression_gradientdescent_vhlearningrate_lepochcount)
+
 ```
 
 
@@ -5793,6 +5805,7 @@ display(linear_regression_gradientdescent_vhlearningrate_lepochcount)
       <th></th>
       <th>Coefficient</th>
       <th>Estimate</th>
+      <th>Method</th>
     </tr>
   </thead>
   <tbody>
@@ -5800,16 +5813,19 @@ display(linear_regression_gradientdescent_vhlearningrate_lepochcount)
       <th>0</th>
       <td>INTERCEPT</td>
       <td>0.008008</td>
+      <td>VeryHighLearningRate_LowEpochCount</td>
     </tr>
     <tr>
       <th>1</th>
       <td>LIFEXP</td>
       <td>0.281761</td>
+      <td>VeryHighLearningRate_LowEpochCount</td>
     </tr>
     <tr>
       <th>2</th>
       <td>GDPCAP</td>
       <td>0.549961</td>
+      <td>VeryHighLearningRate_LowEpochCount</td>
     </tr>
   </tbody>
 </table>
@@ -5889,8 +5905,11 @@ loss_vector_vhlearningrate_hepochcount
 ##################################
 linear_regression_coefficients = pd.DataFrame(["INTERCEPT","LIFEXP","GDPCAP"])
 linear_regression_vhlearningrate_hepochcount = pd.DataFrame(theta_path[-1])
-linear_regression_gradientdescent_vhlearningrate_hepochcount = pd.concat([linear_regression_coefficients, linear_regression_vhlearningrate_hepochcount], axis=1)
-linear_regression_gradientdescent_vhlearningrate_hepochcount.columns = ['Coefficient', 'Estimate']
+linear_regression_vhlearningrate_hepochcount_method = pd.DataFrame(["VeryHighLearningRate_HighEpochCount"]*3)
+linear_regression_gradientdescent_vhlearningrate_hepochcount = pd.concat([linear_regression_coefficients, 
+                                                                          linear_regression_vhlearningrate_hepochcount,
+                                                                          linear_regression_vhlearningrate_hepochcount_method], axis=1)
+linear_regression_gradientdescent_vhlearningrate_hepochcount.columns = ['Coefficient', 'Estimate', 'Method']
 linear_regression_gradientdescent_vhlearningrate_hepochcount.reset_index(inplace=True, drop=True)
 display(linear_regression_gradientdescent_vhlearningrate_hepochcount)
 ```
@@ -5916,6 +5935,7 @@ display(linear_regression_gradientdescent_vhlearningrate_hepochcount)
       <th></th>
       <th>Coefficient</th>
       <th>Estimate</th>
+      <th>Method</th>
     </tr>
   </thead>
   <tbody>
@@ -5923,16 +5943,19 @@ display(linear_regression_gradientdescent_vhlearningrate_hepochcount)
       <th>0</th>
       <td>INTERCEPT</td>
       <td>-0.000606</td>
+      <td>VeryHighLearningRate_HighEpochCount</td>
     </tr>
     <tr>
       <th>1</th>
       <td>LIFEXP</td>
       <td>0.233418</td>
+      <td>VeryHighLearningRate_HighEpochCount</td>
     </tr>
     <tr>
       <th>2</th>
       <td>GDPCAP</td>
       <td>0.508083</td>
+      <td>VeryHighLearningRate_HighEpochCount</td>
     </tr>
   </tbody>
 </table>
@@ -6012,8 +6035,11 @@ loss_vector_hlearningrate_lepochcount
 ##################################
 linear_regression_coefficients = pd.DataFrame(["INTERCEPT","LIFEXP","GDPCAP"])
 linear_regression_hlearningrate_lepochcount = pd.DataFrame(theta_path[-1])
-linear_regression_gradientdescent_hlearningrate_lepochcount = pd.concat([linear_regression_coefficients, linear_regression_hlearningrate_lepochcount], axis=1)
-linear_regression_gradientdescent_hlearningrate_lepochcount.columns = ['Coefficient', 'Estimate']
+linear_regression_hlearningrate_lepochcount_method = pd.DataFrame(["HighLearningRate_LowEpochCount"]*3)
+linear_regression_gradientdescent_hlearningrate_lepochcount = pd.concat([linear_regression_coefficients, 
+                                                                         linear_regression_hlearningrate_lepochcount,
+                                                                         linear_regression_hlearningrate_lepochcount_method], axis=1)
+linear_regression_gradientdescent_hlearningrate_lepochcount.columns = ['Coefficient', 'Estimate', 'Method']
 linear_regression_gradientdescent_hlearningrate_lepochcount.reset_index(inplace=True, drop=True)
 display(linear_regression_gradientdescent_hlearningrate_lepochcount)
 ```
@@ -6039,6 +6065,7 @@ display(linear_regression_gradientdescent_hlearningrate_lepochcount)
       <th></th>
       <th>Coefficient</th>
       <th>Estimate</th>
+      <th>Method</th>
     </tr>
   </thead>
   <tbody>
@@ -6046,16 +6073,19 @@ display(linear_regression_gradientdescent_hlearningrate_lepochcount)
       <th>0</th>
       <td>INTERCEPT</td>
       <td>0.110662</td>
+      <td>HighLearningRate_LowEpochCount</td>
     </tr>
     <tr>
       <th>1</th>
       <td>LIFEXP</td>
       <td>0.317843</td>
+      <td>HighLearningRate_LowEpochCount</td>
     </tr>
     <tr>
       <th>2</th>
       <td>GDPCAP</td>
       <td>0.413052</td>
+      <td>HighLearningRate_LowEpochCount</td>
     </tr>
   </tbody>
 </table>
@@ -6135,8 +6165,11 @@ loss_vector_hlearningrate_hepochcount
 ##################################
 linear_regression_coefficients = pd.DataFrame(["INTERCEPT","LIFEXP","GDPCAP"])
 linear_regression_hlearningrate_hepochcount = pd.DataFrame(theta_path[-1])
-linear_regression_gradientdescent_hlearningrate_hepochcount = pd.concat([linear_regression_coefficients, linear_regression_hlearningrate_hepochcount], axis=1)
-linear_regression_gradientdescent_hlearningrate_hepochcount.columns = ['Coefficient', 'Estimate']
+linear_regression_hlearningrate_hepochcount_method = pd.DataFrame(["HighLearningRate_HighEpochCount"]*3)
+linear_regression_gradientdescent_hlearningrate_hepochcount = pd.concat([linear_regression_coefficients, 
+                                                                         linear_regression_hlearningrate_hepochcount,
+                                                                         linear_regression_hlearningrate_hepochcount_method], axis=1)
+linear_regression_gradientdescent_hlearningrate_hepochcount.columns = ['Coefficient', 'Estimate', 'Method']
 linear_regression_gradientdescent_hlearningrate_hepochcount.reset_index(inplace=True, drop=True)
 display(linear_regression_gradientdescent_hlearningrate_hepochcount)
 ```
@@ -6162,6 +6195,7 @@ display(linear_regression_gradientdescent_hlearningrate_hepochcount)
       <th></th>
       <th>Coefficient</th>
       <th>Estimate</th>
+      <th>Method</th>
     </tr>
   </thead>
   <tbody>
@@ -6169,16 +6203,19 @@ display(linear_regression_gradientdescent_hlearningrate_hepochcount)
       <th>0</th>
       <td>INTERCEPT</td>
       <td>-0.000585</td>
+      <td>HighLearningRate_HighEpochCount</td>
     </tr>
     <tr>
       <th>1</th>
       <td>LIFEXP</td>
       <td>0.237033</td>
+      <td>HighLearningRate_HighEpochCount</td>
     </tr>
     <tr>
       <th>2</th>
       <td>GDPCAP</td>
       <td>0.504420</td>
+      <td>HighLearningRate_HighEpochCount</td>
     </tr>
   </tbody>
 </table>
@@ -6258,8 +6295,11 @@ loss_vector_llearningrate_lepochcount
 ##################################
 linear_regression_coefficients = pd.DataFrame(["INTERCEPT","LIFEXP","GDPCAP"])
 linear_regression_llearningrate_lepochcount = pd.DataFrame(theta_path[-1])
-linear_regression_gradientdescent_llearningrate_lepochcount = pd.concat([linear_regression_coefficients, linear_regression_llearningrate_lepochcount], axis=1)
-linear_regression_gradientdescent_llearningrate_lepochcount.columns = ['Coefficient', 'Estimate']
+linear_regression_llearningrate_lepochcount_method = pd.DataFrame(["LowLearningRate_LowEpochCount"]*3)
+linear_regression_gradientdescent_llearningrate_lepochcount = pd.concat([linear_regression_coefficients, 
+                                                                         linear_regression_llearningrate_lepochcount,
+                                                                         linear_regression_llearningrate_lepochcount_method], axis=1)
+linear_regression_gradientdescent_llearningrate_lepochcount.columns = ['Coefficient', 'Estimate', 'Method']
 linear_regression_gradientdescent_llearningrate_lepochcount.reset_index(inplace=True, drop=True)
 display(linear_regression_gradientdescent_llearningrate_lepochcount)
 ```
@@ -6285,6 +6325,7 @@ display(linear_regression_gradientdescent_llearningrate_lepochcount)
       <th></th>
       <th>Coefficient</th>
       <th>Estimate</th>
+      <th>Method</th>
     </tr>
   </thead>
   <tbody>
@@ -6292,16 +6333,19 @@ display(linear_regression_gradientdescent_llearningrate_lepochcount)
       <th>0</th>
       <td>INTERCEPT</td>
       <td>2.133856</td>
+      <td>LowLearningRate_LowEpochCount</td>
     </tr>
     <tr>
       <th>1</th>
       <td>LIFEXP</td>
       <td>1.811625</td>
+      <td>LowLearningRate_LowEpochCount</td>
     </tr>
     <tr>
       <th>2</th>
       <td>GDPCAP</td>
       <td>1.831115</td>
+      <td>LowLearningRate_LowEpochCount</td>
     </tr>
   </tbody>
 </table>
@@ -6381,8 +6425,11 @@ loss_vector_llearningrate_hepochcount
 ##################################
 linear_regression_coefficients = pd.DataFrame(["INTERCEPT","LIFEXP","GDPCAP"])
 linear_regression_llearningrate_hepochcount = pd.DataFrame(theta_path[-1])
-linear_regression_gradientdescent_llearningrate_hepochcount = pd.concat([linear_regression_coefficients, linear_regression_llearningrate_hepochcount], axis=1)
-linear_regression_gradientdescent_llearningrate_hepochcount.columns = ['Coefficient', 'Estimate']
+linear_regression_llearningrate_hepochcount_method = pd.DataFrame(["LowLearningRate_HighEpochCount"]*3)
+linear_regression_gradientdescent_llearningrate_hepochcount = pd.concat([linear_regression_coefficients, 
+                                                                         linear_regression_llearningrate_hepochcount,
+                                                                         linear_regression_llearningrate_hepochcount_method], axis=1)
+linear_regression_gradientdescent_llearningrate_hepochcount.columns = ['Coefficient', 'Estimate', 'Method']
 linear_regression_gradientdescent_llearningrate_hepochcount.reset_index(inplace=True, drop=True)
 display(linear_regression_gradientdescent_llearningrate_hepochcount)
 ```
@@ -6408,6 +6455,7 @@ display(linear_regression_gradientdescent_llearningrate_hepochcount)
       <th></th>
       <th>Coefficient</th>
       <th>Estimate</th>
+      <th>Method</th>
     </tr>
   </thead>
   <tbody>
@@ -6415,20 +6463,310 @@ display(linear_regression_gradientdescent_llearningrate_hepochcount)
       <th>0</th>
       <td>INTERCEPT</td>
       <td>0.128061</td>
+      <td>LowLearningRate_HighEpochCount</td>
     </tr>
     <tr>
       <th>1</th>
       <td>LIFEXP</td>
       <td>0.320584</td>
+      <td>LowLearningRate_HighEpochCount</td>
     </tr>
     <tr>
       <th>2</th>
       <td>GDPCAP</td>
       <td>0.415517</td>
+      <td>LowLearningRate_HighEpochCount</td>
     </tr>
   </tbody>
 </table>
 </div>
+
+
+## 1.7. Consolidated Findings <a class="anchor" id="1.7"></a>
+
+1. The gradient descent parameter setting which estimated sufficiently comparable coefficients with the baseline values are as follows:
+    * <span style="color: #FF0000">VHLR_HEC</span> = Very High Learning Rate (1.0) and High Epoch Count (300)
+    * <span style="color: #FF0000">HLR_HEC</span> = High Learning Rate (0.1) and High Epoch Count (300)
+2. The choice of **Learning Rate** and **Epoch Count** in the implementation of the gradient descent algorithm are critical to achieving fully optimized coefficients while maintaining minimal squared loss estimates.
+
+
+
+```python
+##################################
+# Consolidating the regression coefficients
+# obtained using all estimation methods
+##################################
+linear_regression_methods = pd.concat([linear_regression_scikitlearn_computations, 
+                                       linear_regression_gradientdescent_vhlearningrate_lepochcount,
+                                       linear_regression_gradientdescent_vhlearningrate_hepochcount,
+                                       linear_regression_gradientdescent_hlearningrate_lepochcount,
+                                       linear_regression_gradientdescent_hlearningrate_hepochcount,
+                                       linear_regression_gradientdescent_llearningrate_lepochcount,
+                                       linear_regression_gradientdescent_llearningrate_hepochcount], axis=0)
+linear_regression_methods.reset_index(inplace=True, drop=True)
+display(linear_regression_methods)
+```
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Coefficient</th>
+      <th>Estimate</th>
+      <th>Method</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>INTERCEPT</td>
+      <td>-0.000606</td>
+      <td>Normal_Equations</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>LIFEXP</td>
+      <td>0.233418</td>
+      <td>Normal_Equations</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>GDPCAP</td>
+      <td>0.508083</td>
+      <td>Normal_Equations</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>INTERCEPT</td>
+      <td>0.008008</td>
+      <td>VeryHighLearningRate_LowEpochCount</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>LIFEXP</td>
+      <td>0.281761</td>
+      <td>VeryHighLearningRate_LowEpochCount</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>GDPCAP</td>
+      <td>0.549961</td>
+      <td>VeryHighLearningRate_LowEpochCount</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>INTERCEPT</td>
+      <td>-0.000606</td>
+      <td>VeryHighLearningRate_HighEpochCount</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>LIFEXP</td>
+      <td>0.233418</td>
+      <td>VeryHighLearningRate_HighEpochCount</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>GDPCAP</td>
+      <td>0.508083</td>
+      <td>VeryHighLearningRate_HighEpochCount</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>INTERCEPT</td>
+      <td>0.110662</td>
+      <td>HighLearningRate_LowEpochCount</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>LIFEXP</td>
+      <td>0.317843</td>
+      <td>HighLearningRate_LowEpochCount</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>GDPCAP</td>
+      <td>0.413052</td>
+      <td>HighLearningRate_LowEpochCount</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>INTERCEPT</td>
+      <td>-0.000585</td>
+      <td>HighLearningRate_HighEpochCount</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>LIFEXP</td>
+      <td>0.237033</td>
+      <td>HighLearningRate_HighEpochCount</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>GDPCAP</td>
+      <td>0.504420</td>
+      <td>HighLearningRate_HighEpochCount</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>INTERCEPT</td>
+      <td>2.133856</td>
+      <td>LowLearningRate_LowEpochCount</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>LIFEXP</td>
+      <td>1.811625</td>
+      <td>LowLearningRate_LowEpochCount</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>GDPCAP</td>
+      <td>1.831115</td>
+      <td>LowLearningRate_LowEpochCount</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>INTERCEPT</td>
+      <td>0.128061</td>
+      <td>LowLearningRate_HighEpochCount</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>LIFEXP</td>
+      <td>0.320584</td>
+      <td>LowLearningRate_HighEpochCount</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>GDPCAP</td>
+      <td>0.415517</td>
+      <td>LowLearningRate_HighEpochCount</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+```python
+consolidated_ne = linear_regression_methods[linear_regression_methods['Method']=='Normal_Equations'].loc[:,"Estimate"]
+consolidated_vhlr_lec = linear_regression_methods[linear_regression_methods['Method']=='VeryHighLearningRate_LowEpochCount'].loc[:,"Estimate"]
+consolidated_vhlr_hec = linear_regression_methods[linear_regression_methods['Method']=='VeryHighLearningRate_HighEpochCount'].loc[:,"Estimate"]
+consolidated_hlr_lec = linear_regression_methods[linear_regression_methods['Method']=='HighLearningRate_LowEpochCount'].loc[:,"Estimate"]
+consolidated_hlr_hec = linear_regression_methods[linear_regression_methods['Method']=='HighLearningRate_HighEpochCount'].loc[:,"Estimate"]
+consolidated_llr_lec = linear_regression_methods[linear_regression_methods['Method']=='LowLearningRate_LowEpochCount'].loc[:,"Estimate"]
+consolidated_llr_hec = linear_regression_methods[linear_regression_methods['Method']=='LowLearningRate_HighEpochCount'].loc[:,"Estimate"]
+linear_regression_methods_plot = pd.DataFrame({'NE': consolidated_ne.values,
+                                               'VHLR_LEC': consolidated_vhlr_lec.values,
+                                               'VHLR_HEC': consolidated_vhlr_hec.values,
+                                               'HLR_LEC': consolidated_hlr_lec.values,
+                                               'HLR_HEC': consolidated_hlr_hec.values,
+                                               'LLR_LEC': consolidated_llr_lec.values,
+                                               'LLR_HEC': consolidated_llr_hec.values},
+                                              linear_regression_methods['Coefficient'].unique())
+linear_regression_methods_plot
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>NE</th>
+      <th>VHLR_LEC</th>
+      <th>VHLR_HEC</th>
+      <th>HLR_LEC</th>
+      <th>HLR_HEC</th>
+      <th>LLR_LEC</th>
+      <th>LLR_HEC</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>INTERCEPT</th>
+      <td>-0.000606</td>
+      <td>0.008008</td>
+      <td>-0.000606</td>
+      <td>0.110662</td>
+      <td>-0.000585</td>
+      <td>2.133856</td>
+      <td>0.128061</td>
+    </tr>
+    <tr>
+      <th>LIFEXP</th>
+      <td>0.233418</td>
+      <td>0.281761</td>
+      <td>0.233418</td>
+      <td>0.317843</td>
+      <td>0.237033</td>
+      <td>1.811625</td>
+      <td>0.320584</td>
+    </tr>
+    <tr>
+      <th>GDPCAP</th>
+      <td>0.508083</td>
+      <td>0.549961</td>
+      <td>0.508083</td>
+      <td>0.413052</td>
+      <td>0.504420</td>
+      <td>1.831115</td>
+      <td>0.415517</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+linear_regression_coefficent_estimation_methods_plot = linear_regression_methods_plot.plot.barh(figsize=(10, 6),width=0.90)
+linear_regression_coefficent_estimation_methods_plot.set_xlim(-0.5,3)
+linear_regression_coefficent_estimation_methods_plot.set_title("Linear Regression Coefficient Comparison by Estimation Method")
+linear_regression_coefficent_estimation_methods_plot.set_xlabel("Linear Regression Coefficient Estimates")
+linear_regression_coefficent_estimation_methods_plot.set_ylabel("Linear Regression Coefficients")
+linear_regression_coefficent_estimation_methods_plot.grid(False)
+linear_regression_coefficent_estimation_methods_plot.legend(loc='center left', bbox_to_anchor=(1.0, 0.5))
+for container in linear_regression_coefficent_estimation_methods_plot.containers:
+    linear_regression_coefficent_estimation_methods_plot.bar_label(container, fmt='%.5f', padding=5, color='black')
+```
+
+
+    
+![png](output_202_0.png)
+    
 
 
 # 2. Summary <a class="anchor" id="Summary"></a>
