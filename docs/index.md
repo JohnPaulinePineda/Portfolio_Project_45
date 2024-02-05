@@ -2,7 +2,7 @@
 # Supervised Learning : Implementing Gradient Descent Algorithm in Estimating Regression Coefficients
 
 ***
-### John Pauline Pineda <br> <br> *February 10, 2024*
+### John Pauline Pineda <br> <br> *February 5, 2024*
 ***
 
 * [**1. Table of Contents**](#TOC)
@@ -6772,7 +6772,7 @@ for container in linear_regression_coefficent_estimation_methods_plot.containers
 # 2. Summary <a class="anchor" id="Summary"></a>
 
 
-
+![Project45_Summary.png](attachment:8d620450-1e60-4c04-96ea-f582601e987a.png)
 
 # 3. References <a class="anchor" id="References"></a>
 
