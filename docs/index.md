@@ -43,8 +43,9 @@ This project manually implements the **Gradient Descent** algorithm using variou
 
 [Regression coefficients](https://link.springer.com/book/10.1007/978-1-4757-3462-1) represent the changes in the independent variable which explain the variation of the dependent variable in the model. The methods applied in this study attempt to estimate the unknown model coefficients by optimizing a loss function - that which measures the quality of the estimated parameters based on how well the model-induced scores agree with the ground truth labels in the data set.
 
-[Gradient descent](https://link.springer.com/book/10.1007/978-1-4757-3462-1) minimizes the loss function parameterized by the model’s coefficients based on the direction and learning rate factors which determine the partial derivative calculations of future iterations, allowing the algorithm to gradually arrive at the local or global minimum considered the point of convergence. This particular implementation used Batch Gradient Descent which computes the gradient of the loss function with respect to the parameters for the entire data set. A very high learning rate (also referred to as step size or the alpha) and low epoch count were applied resulting in larger steps with lesser risks of overshooting the minimum due to a lower number of iterations.
+[Normal Equations](https://www.semanticscholar.org/paper/Nouvelles-m%C3%A9thodes-pour-la-d%C3%A9termination-des-des-Legendre/21c9090e226ab449ffb608ddb2cb925911a61f24) are a system of equations whose solution is the Ordinary Least Squares (OLS) estimator of the regression coefficients and which are derived from the first-order condition of the least squares minimization problem. These equations are obtained by setting equal to zero the partial derivatives of the sum of squared errors (least squares). This approach is a closed-form solution and a one-step algorithm used to analytically find the coefficients that minimize the loss function.
 
+[Gradient descent](https://link.springer.com/book/10.1007/978-1-4757-3462-1) minimizes the loss function parameterized by the model’s coefficients based on the direction and learning rate factors which determine the partial derivative calculations of future iterations, allowing the algorithm to gradually arrive at the local or global minimum considered the point of convergence. This particular implementation used Batch Gradient Descent which computes the gradient of the loss function with respect to the parameters for the entire data set. 
 
 ## 1.1. Data Background <a class="anchor" id="1.1"></a>
 
@@ -5439,12 +5440,11 @@ display(X_train.shape)
 
 [Normal Equations](https://www.semanticscholar.org/paper/Nouvelles-m%C3%A9thodes-pour-la-d%C3%A9termination-des-des-Legendre/21c9090e226ab449ffb608ddb2cb925911a61f24) are a system of equations whose solution is the Ordinary Least Squares (OLS) estimator of the regression coefficients and which are derived from the first-order condition of the least squares minimization problem. These equations are obtained by setting equal to zero the partial derivatives of the sum of squared errors (least squares). This approach is a closed-form solution and a one-step algorithm used to analytically find the coefficients that minimize the loss function.
 
-1. The [linear regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html) from the <mark style="background-color: #CCECFF"><b>sklearn.linear_model</b></mark> Python library API was implemented. 
-2. Applying normal equations, the estimated linear regression coefficients for the given data are as follows:
-    * <span style="color: #FF0000">INTERCEPT</span> = -0.01969
-    * <span style="color: #FF0000">LIFEXP</span> = +0.04327
-    * <span style="color: #FF0000">DTHCMD</span> = -0.33342
-    * <span style="color: #FF0000">GDPCAP</span> = +0.44115
+1. Applying normal equations, the estimated linear regression coefficients for the given data are as follows:
+    * <span style="color: #FF0000">INTERCEPT</span> = -0.000061
+    * <span style="color: #FF0000">LIFEXP</span> = +0.23342
+    * <span style="color: #FF0000">GDPCAP</span> = +0.50808
+2. The [linear regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html) from the <mark style="background-color: #CCECFF"><b>sklearn.linear_model</b></mark> Python library API was implemented which generated the same regression coefficient estimates.
 3. These estimated coefficients will be the baseline values from which all gradient descent algorithm-derived coefficients will be compared with.
 
 
@@ -5611,6 +5611,9 @@ theta_2 = 0.508083
 
 ### 1.6.3 Gradient Descent Algorithm with Very High Learning Rate and Low Epoch Count <a class="anchor" id="1.6.3"></a>
 
+[Gradient descent](https://link.springer.com/book/10.1007/978-1-4757-3462-1) minimizes the loss function parameterized by the model’s coefficients based on the direction and learning rate factors which determine the partial derivative calculations of future iterations, allowing the algorithm to gradually arrive at the local or global minimum considered the point of convergence. This particular implementation used Batch Gradient Descent which computes the gradient of the loss function with respect to the parameters for the entire data set. A very high learning rate (also referred to as step size or the alpha) and low epoch count were applied resulting in larger steps with lesser risks of overshooting the minimum due to a lower number of iterations.
+
+
 
 ```python
 ##################################
@@ -5653,15 +5656,15 @@ target_coefficient = [intercept, theta_1, theta_2]
 target_coefficient_name = ["INTERCEPT","LIFEXP","GDPCAP"]
 def plot_ij(theta_path, i, j, ax):
     ax.plot(target_coefficient[i], target_coefficient[j],
-            marker='p', markersize=15, label='target coefficient', 
-            color='#778899')
+            marker='p', markersize=15, label='Target Coefficient', 
+            color='#FF0000')
     ax.plot(theta_path[:, i],theta_path[:, j],
             color='k', linestyle='--', marker='^', 
-            markersize=5, markevery=50)
+            markersize=5, markevery=1)
     ax.plot(theta_path[0, i], theta_path[0, j], marker='d', 
-            markersize=15, label='start', color='#F08080')
+            markersize=10, label='Gradient Descent Path Start', color='#00FF0088')
     ax.plot(theta_path[-1, i], theta_path[-1, j], marker='o', 
-            markersize=15, label='finish', color='#F08080')
+            markersize=10, label='Gradient Descent Path End', color='#0000FF88')
     ax.set(
         xlabel=target_coefficient_name[i],
         ylabel=target_coefficient_name[j])
@@ -5792,6 +5795,8 @@ display(linear_regression_gradientdescent_vhlearningrate_lepochcount)
 
 ### 1.6.4 Gradient Descent Algorithm with Very High Learning Rate and High Epoch Count <a class="anchor" id="1.6.4"></a>
 
+[Gradient descent](https://link.springer.com/book/10.1007/978-1-4757-3462-1) minimizes the loss function parameterized by the model’s coefficients based on the direction and learning rate factors which determine the partial derivative calculations of future iterations, allowing the algorithm to gradually arrive at the local or global minimum considered the point of convergence. This particular implementation used Batch Gradient Descent which computes the gradient of the loss function with respect to the parameters for the entire data set. A very high learning rate (also referred to as step size or the alpha) and high epoch count were applied resulting in larger steps with more risks of overshooting the minimum due to a higher number of iterations.
+
 
 ```python
 ##################################
@@ -5888,6 +5893,8 @@ display(linear_regression_gradientdescent_vhlearningrate_hepochcount)
 
 
 ### 1.6.5 Gradient Descent Algorithm with High Learning Rate and Low Epoch Count <a class="anchor" id="1.6.5"></a>
+
+[Gradient descent](https://link.springer.com/book/10.1007/978-1-4757-3462-1) minimizes the loss function parameterized by the model’s coefficients based on the direction and learning rate factors which determine the partial derivative calculations of future iterations, allowing the algorithm to gradually arrive at the local or global minimum considered the point of convergence. This particular implementation used Batch Gradient Descent which computes the gradient of the loss function with respect to the parameters for the entire data set. A sufficiently high learning rate (also referred to as step size or the alpha) and low epoch count were applied resulting in average steps with more risks of not reaching the minimum due to a lower number of iterations.
 
 
 ```python
@@ -5986,6 +5993,8 @@ display(linear_regression_gradientdescent_hlearningrate_lepochcount)
 
 ### 1.6.6 Gradient Descent Algorithm with High Learning Rate and High Epoch Count <a class="anchor" id="1.6.6"></a>
 
+[Gradient descent](https://link.springer.com/book/10.1007/978-1-4757-3462-1) minimizes the loss function parameterized by the model’s coefficients based on the direction and learning rate factors which determine the partial derivative calculations of future iterations, allowing the algorithm to gradually arrive at the local or global minimum considered the point of convergence. This particular implementation used Batch Gradient Descent which computes the gradient of the loss function with respect to the parameters for the entire data set. A sufficiently high learning rate (also referred to as step size or the alpha) and low epoch count were applied resulting in average steps with lesser risks of not reaching the minimum as compensated by the higher number of iterations.
+
 
 ```python
 ##################################
@@ -6083,6 +6092,8 @@ display(linear_regression_gradientdescent_hlearningrate_hepochcount)
 
 ### 1.6.7 Gradient Descent Algorithm with Low Learning Rate and Low Epoch Count <a class="anchor" id="1.6.7"></a>
 
+[Gradient descent](https://link.springer.com/book/10.1007/978-1-4757-3462-1) minimizes the loss function parameterized by the model’s coefficients based on the direction and learning rate factors which determine the partial derivative calculations of future iterations, allowing the algorithm to gradually arrive at the local or global minimum considered the point of convergence. This particular implementation used Batch Gradient Descent which computes the gradient of the loss function with respect to the parameters for the entire data set. A low learning rate (also referred to as step size or the alpha) and low epoch count were applied resulting in smaller steps with higher risks of not reaching the minimum due to the smaller number of iterations.
+
 
 ```python
 ##################################
@@ -6179,6 +6190,9 @@ display(linear_regression_gradientdescent_llearningrate_lepochcount)
 
 
 ### 1.6.8 Gradient Descent Algorithm with Low Learning Rate and High Epoch Count <a class="anchor" id="1.6.8"></a>
+
+[Gradient descent](https://link.springer.com/book/10.1007/978-1-4757-3462-1) minimizes the loss function parameterized by the model’s coefficients based on the direction and learning rate factors which determine the partial derivative calculations of future iterations, allowing the algorithm to gradually arrive at the local or global minimum considered the point of convergence. This particular implementation used Batch Gradient Descent which computes the gradient of the loss function with respect to the parameters for the entire data set. A low learning rate (also referred to as step size or the alpha) and low epoch count were applied resulting in smaller steps with lesser risks of not reaching the minimum as compensated by the smaller number of iterations.
+
 
 
 ```python
