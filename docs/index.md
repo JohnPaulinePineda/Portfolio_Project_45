@@ -5441,7 +5441,7 @@ display(X_train.shape)
 [Normal Equations](https://www.semanticscholar.org/paper/Nouvelles-m%C3%A9thodes-pour-la-d%C3%A9termination-des-des-Legendre/21c9090e226ab449ffb608ddb2cb925911a61f24) are a system of equations whose solution is the Ordinary Least Squares (OLS) estimator of the regression coefficients and which are derived from the first-order condition of the least squares minimization problem. These equations are obtained by setting equal to zero the partial derivatives of the sum of squared errors (least squares). This approach is a closed-form solution and a one-step algorithm used to analytically find the coefficients that minimize the loss function.
 
 1. Applying normal equations, the estimated linear regression coefficients for the given data are as follows:
-    * <span style="color: #FF0000">INTERCEPT</span> = -0.000061
+    * <span style="color: #FF0000">INTERCEPT</span> = -0.00061
     * <span style="color: #FF0000">LIFEXP</span> = +0.23342
     * <span style="color: #FF0000">GDPCAP</span> = +0.50808
 2. The [linear regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html) from the <mark style="background-color: #CCECFF"><b>sklearn.linear_model</b></mark> Python library API was implemented which generated the same regression coefficient estimates.
@@ -5613,6 +5613,16 @@ theta_2 = 0.508083
 
 [Gradient descent](https://link.springer.com/book/10.1007/978-1-4757-3462-1) minimizes the loss function parameterized by the model’s coefficients based on the direction and learning rate factors which determine the partial derivative calculations of future iterations, allowing the algorithm to gradually arrive at the local or global minimum considered the point of convergence. This particular implementation used Batch Gradient Descent which computes the gradient of the loss function with respect to the parameters for the entire data set. A very high learning rate (also referred to as step size or the alpha) and low epoch count were applied resulting in larger steps with lesser risks of overshooting the minimum due to a lower number of iterations.
 
+1. The gradient descent algorithm was implemented with parameter settings described as follows:
+    * <span style="color: #FF0000">Learning Rate</span> = 1.00 (Very High)
+    * <span style="color: #FF0000">Epochs</span> = 30 (Low)
+2. The final squared loss estimate determined as 53.54705 at the 30th epoch was not optimally low as compared to those obtained using the other parameter settings.
+3. Applying the gradient descent algorithm with a very high learning rate and low epoch count, the estimated linear regression coefficients for the given data are as follows:
+    * <span style="color: #FF0000">INTERCEPT</span> = +0.00801 (Baseline = -0.00061)
+    * <span style="color: #FF0000">LIFEXP</span> = +0.28176 (Baseline = +0.23342)
+    * <span style="color: #FF0000">GDPCAP</span> = +0.54996 (Baseline = +0.50808)
+4. The estimated coefficients using the gradient descent algorithm with a very high learning rate and low epoch count were not fully optimized and comparable with the baseline coefficients using normal equations.
+
 
 
 ```python
@@ -5735,6 +5745,19 @@ plot_all(theta_path, loss_vector, learning_rate, num_iterations, theta_initial)
 
 
 ```python
+loss_vector_vhlearningrate_lepochcount = loss_vector[-1]
+loss_vector_vhlearningrate_lepochcount
+```
+
+
+
+
+    53.54705756819414
+
+
+
+
+```python
 ##################################
 # Consolidating the regression coefficients
 # obtained using the Gradient Descent process
@@ -5797,6 +5820,17 @@ display(linear_regression_gradientdescent_vhlearningrate_lepochcount)
 
 [Gradient descent](https://link.springer.com/book/10.1007/978-1-4757-3462-1) minimizes the loss function parameterized by the model’s coefficients based on the direction and learning rate factors which determine the partial derivative calculations of future iterations, allowing the algorithm to gradually arrive at the local or global minimum considered the point of convergence. This particular implementation used Batch Gradient Descent which computes the gradient of the loss function with respect to the parameters for the entire data set. A very high learning rate (also referred to as step size or the alpha) and high epoch count were applied resulting in larger steps with more risks of overshooting the minimum due to a higher number of iterations.
 
+1. The gradient descent algorithm was implemented with parameter settings described as follows:
+    * <span style="color: #FF0000">Learning Rate</span> = 1.00 (Very High)
+    * <span style="color: #FF0000">Epochs</span> = 300 (High)
+2. The final squared loss estimate determined as 52.38026 at the 300th epoch was optimally low as compared to those obtained using the other parameter settings.
+3. Applying the gradient descent algorithm with a very high learning rate and high epoch count, the estimated linear regression coefficients for the given data are as follows:
+    * <span style="color: #FF0000">INTERCEPT</span> = -0.00061 (Baseline = -0.00061)
+    * <span style="color: #FF0000">LIFEXP</span> = +0.23342 (Baseline = +0.23342)
+    * <span style="color: #FF0000">GDPCAP</span> = +0.50808 (Baseline = +0.50808)
+4. The estimated coefficients using the gradient descent algorithm with a very high learning rate and high epoch count were fully optimized and comparable with the baseline coefficients using normal equations.
+
+
 
 ```python
 ##################################
@@ -5828,8 +5862,21 @@ plot_all(theta_path, loss_vector, learning_rate, num_iterations, theta_initial)
 
 
     
-![png](output_179_0.png)
+![png](output_180_0.png)
     
+
+
+
+```python
+loss_vector_vhlearningrate_hepochcount = loss_vector[-1]
+loss_vector_vhlearningrate_hepochcount
+```
+
+
+
+
+    52.38026912784726
+
 
 
 
@@ -5896,6 +5943,17 @@ display(linear_regression_gradientdescent_vhlearningrate_hepochcount)
 
 [Gradient descent](https://link.springer.com/book/10.1007/978-1-4757-3462-1) minimizes the loss function parameterized by the model’s coefficients based on the direction and learning rate factors which determine the partial derivative calculations of future iterations, allowing the algorithm to gradually arrive at the local or global minimum considered the point of convergence. This particular implementation used Batch Gradient Descent which computes the gradient of the loss function with respect to the parameters for the entire data set. A sufficiently high learning rate (also referred to as step size or the alpha) and low epoch count were applied resulting in average steps with more risks of not reaching the minimum due to a lower number of iterations.
 
+1. The gradient descent algorithm was implemented with parameter settings described as follows:
+    * <span style="color: #FF0000">Learning Rate</span> = 0.10 (High)
+    * <span style="color: #FF0000">Epochs</span> = 30 (Low)
+2. The final squared loss estimate determined as 54.31567 at the 30th epoch was not optimally low as compared to those obtained using the other parameter settings.
+3. Applying the gradient descent algorithm with a high learning rate and low epoch count, the estimated linear regression coefficients for the given data are as follows:
+    * <span style="color: #FF0000">INTERCEPT</span> = +0.11066 (Baseline = -0.00061)
+    * <span style="color: #FF0000">LIFEXP</span> = +0.31784 (Baseline = +0.23342)
+    * <span style="color: #FF0000">GDPCAP</span> = +0.41305 (Baseline = +0.50808)
+4. The estimated coefficients using the gradient descent algorithm with a high learning rate and low epoch count were not fully optimized and comparable with the baseline coefficients using normal equations.
+
+
 
 ```python
 ##################################
@@ -5927,8 +5985,21 @@ plot_all(theta_path, loss_vector, learning_rate, num_iterations, theta_initial)
 
 
     
-![png](output_182_0.png)
+![png](output_184_0.png)
     
+
+
+
+```python
+loss_vector_hlearningrate_lepochcount = loss_vector[-1]
+loss_vector_hlearningrate_lepochcount
+```
+
+
+
+
+    54.315668691393675
+
 
 
 
@@ -5995,6 +6066,17 @@ display(linear_regression_gradientdescent_hlearningrate_lepochcount)
 
 [Gradient descent](https://link.springer.com/book/10.1007/978-1-4757-3462-1) minimizes the loss function parameterized by the model’s coefficients based on the direction and learning rate factors which determine the partial derivative calculations of future iterations, allowing the algorithm to gradually arrive at the local or global minimum considered the point of convergence. This particular implementation used Batch Gradient Descent which computes the gradient of the loss function with respect to the parameters for the entire data set. A sufficiently high learning rate (also referred to as step size or the alpha) and low epoch count were applied resulting in average steps with lesser risks of not reaching the minimum as compensated by the higher number of iterations.
 
+1. The gradient descent algorithm was implemented with parameter settings described as follows:
+    * <span style="color: #FF0000">Learning Rate</span> = 0.10 (High)
+    * <span style="color: #FF0000">Epochs</span> = 300 (High)
+2. The final squared loss estimate determined as 52.38063 at the 300th epoch was not optimally low as compared to those obtained using the other parameter settings.
+3. Applying the gradient descent algorithm with a high learning rate and high epoch count, the estimated linear regression coefficients for the given data are as follows:
+    * <span style="color: #FF0000">INTERCEPT</span> = -0.00058 (Baseline = -0.00061)
+    * <span style="color: #FF0000">LIFEXP</span> = +0.23703 (Baseline = +0.23342)
+    * <span style="color: #FF0000">GDPCAP</span> = +0.50442 (Baseline = +0.50808)
+4. The estimated coefficients using the gradient descent algorithm with a high learning rate and high epoch count, while not fully optimized, were sufficiently comparable with the baseline coefficients using normal equations.
+
+
 
 ```python
 ##################################
@@ -6026,8 +6108,21 @@ plot_all(theta_path, loss_vector, learning_rate, num_iterations, theta_initial)
 
 
     
-![png](output_185_0.png)
+![png](output_188_0.png)
     
+
+
+
+```python
+loss_vector_hlearningrate_hepochcount = loss_vector[-1]
+loss_vector_hlearningrate_hepochcount
+```
+
+
+
+
+    52.380634424224674
+
 
 
 
@@ -6094,6 +6189,17 @@ display(linear_regression_gradientdescent_hlearningrate_hepochcount)
 
 [Gradient descent](https://link.springer.com/book/10.1007/978-1-4757-3462-1) minimizes the loss function parameterized by the model’s coefficients based on the direction and learning rate factors which determine the partial derivative calculations of future iterations, allowing the algorithm to gradually arrive at the local or global minimum considered the point of convergence. This particular implementation used Batch Gradient Descent which computes the gradient of the loss function with respect to the parameters for the entire data set. A low learning rate (also referred to as step size or the alpha) and low epoch count were applied resulting in smaller steps with higher risks of not reaching the minimum due to the smaller number of iterations.
 
+1. The gradient descent algorithm was implemented with parameter settings described as follows:
+    * <span style="color: #FF0000">Learning Rate</span> = 0.01 (Low)
+    * <span style="color: #FF0000">Epochs</span> = 30 (Low)
+2. The final squared loss estimate determined as 1631.70371 at the 30th epoch was not optimally low as compared to those obtained using the other parameter settings.
+3. Applying the gradient descent algorithm with a low learning rate and low epoch count, the estimated linear regression coefficients for the given data are as follows:
+    * <span style="color: #FF0000">INTERCEPT</span> = +2.13385 (Baseline = -0.00061)
+    * <span style="color: #FF0000">LIFEXP</span> = +1.81162 (Baseline = +0.23342)
+    * <span style="color: #FF0000">GDPCAP</span> = +1.83111 (Baseline = +0.50808)
+4. The estimated coefficients using the gradient descent algorithm with a low learning rate and low epoch count were not fully optimized and comparable with the baseline coefficients using normal equations.
+
+
 
 ```python
 ##################################
@@ -6125,8 +6231,21 @@ plot_all(theta_path, loss_vector, learning_rate, num_iterations, theta_initial)
 
 
     
-![png](output_188_0.png)
+![png](output_192_0.png)
     
+
+
+
+```python
+loss_vector_llearningrate_lepochcount = loss_vector[-1]
+loss_vector_llearningrate_lepochcount
+```
+
+
+
+
+    1631.7037156372799
+
 
 
 
@@ -6193,6 +6312,16 @@ display(linear_regression_gradientdescent_llearningrate_lepochcount)
 
 [Gradient descent](https://link.springer.com/book/10.1007/978-1-4757-3462-1) minimizes the loss function parameterized by the model’s coefficients based on the direction and learning rate factors which determine the partial derivative calculations of future iterations, allowing the algorithm to gradually arrive at the local or global minimum considered the point of convergence. This particular implementation used Batch Gradient Descent which computes the gradient of the loss function with respect to the parameters for the entire data set. A low learning rate (also referred to as step size or the alpha) and low epoch count were applied resulting in smaller steps with lesser risks of not reaching the minimum as compensated by the smaller number of iterations.
 
+1. The gradient descent algorithm was implemented with parameter settings described as follows:
+    * <span style="color: #FF0000">Learning Rate</span> = 0.01 (Low)
+    * <span style="color: #FF0000">Epochs</span> = 300 (High)
+2. The final squared loss estimate determined as 54.50204 at the 300th epoch was not optimally low as compared to those obtained using the other parameter settings.
+3. Applying the gradient descent algorithm with a low learning rate and high epoch count, the estimated linear regression coefficients for the given data are as follows:
+    * <span style="color: #FF0000">INTERCEPT</span> = +0.12806 (Baseline = -0.00061)
+    * <span style="color: #FF0000">LIFEXP</span> = +0.32058 (Baseline = +0.23342)
+    * <span style="color: #FF0000">GDPCAP</span> = +0.41551 (Baseline = +0.50808)
+4. The estimated coefficients using the gradient descent algorithm with a low learning rate and high epoch count were not fully optimized and comparable with the baseline coefficients using normal equations.
+
 
 
 ```python
@@ -6225,8 +6354,21 @@ plot_all(theta_path, loss_vector, learning_rate, num_iterations, theta_initial)
 
 
     
-![png](output_191_0.png)
+![png](output_196_0.png)
     
+
+
+
+```python
+loss_vector_llearningrate_hepochcount = loss_vector[-1]
+loss_vector_llearningrate_hepochcount
+```
+
+
+
+
+    54.50204042343665
+
 
 
 
