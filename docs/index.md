@@ -5753,6 +5753,9 @@ plot_all(theta_path, loss_vector, learning_rate, num_iterations, theta_initial)
 
 
 ```python
+##################################
+# Determining the final estimated loss
+##################################
 loss_vector_vhlearningrate_lepochcount = loss_vector[-1]
 loss_vector_vhlearningrate_lepochcount
 ```
@@ -5884,6 +5887,9 @@ plot_all(theta_path, loss_vector, learning_rate, num_iterations, theta_initial)
 
 
 ```python
+##################################
+# Determining the final estimated loss
+##################################
 loss_vector_vhlearningrate_hepochcount = loss_vector[-1]
 loss_vector_vhlearningrate_hepochcount
 ```
@@ -6014,6 +6020,9 @@ plot_all(theta_path, loss_vector, learning_rate, num_iterations, theta_initial)
 
 
 ```python
+##################################
+# Determining the final estimated loss
+##################################
 loss_vector_hlearningrate_lepochcount = loss_vector[-1]
 loss_vector_hlearningrate_lepochcount
 ```
@@ -6144,6 +6153,9 @@ plot_all(theta_path, loss_vector, learning_rate, num_iterations, theta_initial)
 
 
 ```python
+##################################
+# Determining the final estimated loss
+##################################
 loss_vector_hlearningrate_hepochcount = loss_vector[-1]
 loss_vector_hlearningrate_hepochcount
 ```
@@ -6274,6 +6286,9 @@ plot_all(theta_path, loss_vector, learning_rate, num_iterations, theta_initial)
 
 
 ```python
+##################################
+# Determining the final estimated loss
+##################################
 loss_vector_llearningrate_lepochcount = loss_vector[-1]
 loss_vector_llearningrate_lepochcount
 ```
@@ -6404,6 +6419,9 @@ plot_all(theta_path, loss_vector, learning_rate, num_iterations, theta_initial)
 
 
 ```python
+##################################
+# Determining the final estimated loss
+##################################
 loss_vector_llearningrate_hepochcount = loss_vector[-1]
 loss_vector_llearningrate_hepochcount
 ```
