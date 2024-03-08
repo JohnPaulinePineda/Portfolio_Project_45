@@ -6790,7 +6790,7 @@ for container in linear_regression_coefficent_estimation_methods_plot.containers
 # 2. Summary <a class="anchor" id="Summary"></a>
 
 
-![Project45_Summary.png](attachment:5fe65e11-fad0-4058-a687-650915015a18.png)
+![Project45_Summary.png](attachment:a622467c-6075-4f26-a927-b46fb35aa8dd.png)
 
 # 3. References <a class="anchor" id="References"></a>
 
