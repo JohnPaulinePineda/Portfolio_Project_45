@@ -1,2 +1,7 @@
-# Portfolio_Project_45
-Data science [project](https://johnpaulinepineda.github.io/Portfolio_Project_45/) which demonstrates the implementation of the gradient descent algorithm in estimating the coefficients of a linear regression model in Python.
+# [Supervised Learning : Implementing Gradient Descent Algorithm in Estimating Regression Coefficients](https://johnpaulinepineda.github.io/Portfolio_Project_45/)
+
+[![](https://img.shields.io/badge/Python-black?logo=Python)](#) [![](https://img.shields.io/badge/Jupyter-black?logo=Jupyter)](#)
+
+This [project](https://johnpaulinepineda.github.io/Portfolio_Project_45/) manually implements the Gradient Descent algorithm and evaluates a range of values for the learning rate and epoch count parameters to optimally estimate the coefficients of a linear regression model. The gradient descent path and loss function profiles of the different candidate parameter settings were compared, with the resulting estimated coefficients assessed against those obtained using normal equations which served as the reference baseline values.
+
+<img src="docs/Project45_Summary.png?raw=true"/>
