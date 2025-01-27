@@ -6177,7 +6177,7 @@ loss_vector_vhlearningrate_lepochcount
 
 
 
-    np.float64(53.54705756819415)
+    np.float64(53.54705756819414)
 
 
 
@@ -6311,7 +6311,7 @@ loss_vector_vhlearningrate_hepochcount
 
 
 
-    np.float64(52.38026912784726)
+    np.float64(52.38026912784727)
 
 
 
@@ -6444,7 +6444,7 @@ loss_vector_hlearningrate_lepochcount
 
 
 
-    np.float64(54.31566869139366)
+    np.float64(54.31566869139367)
 
 
 
@@ -7230,7 +7230,6 @@ for container in linear_regression_coefficent_estimation_methods_plot.containers
 * **[Python Library API]** [sklearn.model_selection](https://scikit-learn.org/stable/model_selection.html) by Scikit-Learn Team
 * **[Python Library API]** [sklearn.pipeline](https://scikit-learn.org/stable/modules/compose.html) by Scikit-Learn Team
 * **[Python Library API]** [scipy](https://docs.scipy.org/doc/scipy/) by SciPy Team
-* **[Article]** [Step-by-Step Exploratory Data Analysis (EDA) using Python](https://www.analyticsvidhya.com/blog/2022/07/step-by-step-exploratory-data-analysis-eda-using-python/#:~:text=Exploratory%20Data%20Analysis%20(EDA)%20with,distributions%20using%20Python%20programming%20language.) by Malamahadevan Mahadevan (Analytics Vidhya)
 * **[Article]** [Exploratory Data Analysis in Python — A Step-by-Step Process](https://towardsdatascience.com/exploratory-data-analysis-in-python-a-step-by-step-process-d0dfa6bf94ee) by Andrea D'Agostino (Towards Data Science)
 * **[Article]** [Exploratory Data Analysis with Python](https://medium.com/@douglas.rochedo/exploratory-data-analysis-with-python-78b6c1d479cc) by Douglas Rocha (Medium)
 * **[Article]** [4 Ways to Automate Exploratory Data Analysis (EDA) in Python](https://builtin.com/data-science/EDA-python) by Abdishakur Hassan (BuiltIn)
